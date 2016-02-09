@@ -15,3 +15,4 @@ Licenses
 * Font used in Logo:
     [amstradpc1512](http://int10h.org/oldschool-pc-fonts/fontlist/#amstradpc1512)
     CC-BY-SA4.0 by [VileR](http://int10h.org/)
+* [Socket.io](http://socket.io/)  MIT License
