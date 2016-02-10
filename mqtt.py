@@ -34,7 +34,13 @@ class MQTTRunner(object):
 
 
     def start(self):
+        self._client = mqtt.Client()
+        self._client.on_connect = self._on_connect
+        self._client.on_message = self._on_message
+
         self._client.connect(MQTT_BROKER)
+
+        self._thread = threading.Thread(target=self._run)
         self._thread_stop = False
         self._thread.start()
 
@@ -42,10 +48,7 @@ class MQTTRunner(object):
     def __init__(self, socketio):
         self._socketio = socketio
 
+        self._thread = None
+        self._client = None
+
         atexit.register(self._teardown)
-
-        self._client = mqtt.Client()
-        self._client.on_connect = self._on_connect
-        self._client.on_message = self._on_message
-
-        self._thread = threading.Thread(target=self._run)
