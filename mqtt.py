@@ -5,18 +5,24 @@ import atexit
 
 import paho.mqtt.client as mqtt
 
-from config import MQTT_BROKER, MQTT_USER, MQTT_PASSWORD
+from config import MQTT_BROKER, MQTT_USER, MQTT_PASSWORD, MQTT_TOPICS
+
+from messageparsers import mqtt_parse_message
 
 class MQTTRunner(object):
 
     def _on_connect(self, client, userdata, flags, rc):
-        print "Subscribing"
-        client.subscribe("/esp/temp/0")
+        for topic in MQTT_TOPICS.keys():
+            print "[Info] Subscribing to %s" % topic
+            client.subscribe(topic)
 
 
     def _on_message(self, client, userdata, msg):
-        print msg.topic + "\t" + str(msg.payload)
-        self._socketio.emit("mqtt_message", {'topic' : msg.topic, 'payload' : msg.payload})
+        print "[Debug] %s\t%s" % (msg.topic, msg.payload)
+
+        data = mqtt_parse_message(MQTT_TOPICS[msg.topic], msg.topic, msg.payload)
+        if data != None:
+            self._socketio.emit("mqtt_message", {'topic' : msg.topic, 'time': data[0], 'value': data[1]})
 
 
     def _run(self):
