@@ -2,6 +2,7 @@
 
 import threading
 import atexit
+import time
 
 import paho.mqtt.client as mqtt
 
@@ -22,7 +23,10 @@ class MQTTRunner(object):
 
         data = mqtt_parse_message(MQTT_TOPICS[msg.topic], msg.topic, msg.payload)
         if data != None:
-            self._socketio.emit("mqtt_message", {'topic' : msg.topic, 'time': data[0], 'value': data[1]})
+            timestamp = data['time'] * 1000.0
+            self._socketio.emit("mqtt_message", {'topic' : msg.topic, 'time': timestamp, 'value': data['value']})
+
+            self._dbmanager.insert_message(data['time'], msg.topic, data['value'])
 
 
     def _run(self):
@@ -51,8 +55,9 @@ class MQTTRunner(object):
         self._thread.start()
 
 
-    def __init__(self, socketio):
+    def __init__(self, socketio, dbmanager):
         self._socketio = socketio
+        self._dbmanager = dbmanager
 
         self._thread = None
         self._client = None

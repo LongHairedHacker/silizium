@@ -1,7 +1,6 @@
 #!/usr/bin/env python2
 import traceback
-
-from time import time
+import time
 
 _mqtt_message_parsers = {}
 
@@ -19,7 +18,7 @@ def mqtt_parse_message(parser, topic, message):
         return None
 
     try:
-        data = _mqtt_message_parsers[parser](topic, message)
+        data = _mqtt_message_parsers[parser](message)
         return data
     except Exception as e:
         print "[Warning] Expection while trying to parse a message for %s" % (topic)
@@ -27,11 +26,9 @@ def mqtt_parse_message(parser, topic, message):
         return None
 
 
-
-def float_parser(topic, message):
-	timestamp = time()
+def float_parser(message):
 	value = float(message)
 
-	return (timestamp, value)
+	return {'time': time.time(), 'value': value}
 
 mqtt_register_message_parser('float', float_parser)

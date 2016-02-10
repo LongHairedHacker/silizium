@@ -4,6 +4,8 @@ MQTT_BROKER = 'localhost'
 MQTT_USER = ''
 MQTT_PASSWORD = ''
 
+DB_CONNECTION_STRING = 'dbname=silizium user=silizium'
+
 
 MQTT_TOPICS = {
 	'/esp/temp/0' : 'float'

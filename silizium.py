@@ -11,13 +11,18 @@ from datetime import datetime
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 
+from dbmanager import DBManager
 from mqtt import MQTTRunner
+
+from config import DB_CONNECTION_STRING
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'omg_so_secret!'
 socketio = SocketIO(app)
-runner = MQTTRunner(socketio)
+db_manager = DBManager(DB_CONNECTION_STRING)
+runner = MQTTRunner(socketio, db_manager)
+
 
 @app.route('/')
 def test_page():
@@ -26,6 +31,7 @@ def test_page():
 
 
 def setup():
+	db_manager.connect()
 	runner.start()
 
 
