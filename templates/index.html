@@ -1,0 +1,36 @@
+<html>
+	<head>
+		<title>Test</title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/font/amstradpc1512.css') }}" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+	</head>
+	<body>
+		<script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.2.0.min.js') }}"></script>
+		<script type="text/javascript">
+    		var socket = io.connect('http://' + document.domain + ':' + location.port);
+			socket.on('connect', function() {
+				socket.on('mqtt_message', function(msg) {
+					console.log(msg);
+
+					var date = new Date(msg.time);
+					var dateStr = date.toLocaleDateString();
+					var timeStr = date.toLocaleTimeString();
+
+					$('.log p:first').before('<p>[' + dateStr + ' ' + timeStr + '] - '
+												+ msg.topic + ' - ' + msg.value.toFixed(2) + ' </p>');
+
+
+				});
+			});
+		</script>
+
+		<div class="overlay"></div>
+		<h1>S.I.L\I.Z.I.U.M.</h1>
+
+		<div class="log">
+			<p>No messages yet ...</p>
+		</div>
+
+	</body>
+</html>

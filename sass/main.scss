@@ -1,0 +1,49 @@
+$background_color : #000000;
+$primary_color: #df8522;
+
+$scan_line_width : 1px;
+
+body {
+	font: {
+		family: 'px437_amstradpc1512regular';
+		size: 15px;
+	}
+
+	color: $primary_color;
+	background-color: $background_color;
+
+	text-shadow: 0px 0px 2px $primary_color;
+
+}
+
+
+.overlay {
+	/*** WEBKIT ***/
+    background: -webkit-repeating-linear-gradient(
+    	top,
+    	transparent 0px,
+    	transparent $scan_line_width,
+		rgba(0,0,0,1) $scan_line_width,
+    	rgba(0,0,0,1) $scan_line_width*2
+    );
+    -webkit-background-size: 100% $scan_line_width*2;
+
+	/** MOZILLA **/
+	background: -moz-repeating-linear-gradient(
+		top,
+		transparent 0px,
+		transparent $scan_line_width,
+		rgba(0,0,0,1) $scan_line_width,
+    	rgba(0,0,0,1) $scan_line_width*2
+    );
+    -moz-background-size: 100% $scan_line_width*2;
+
+	pointer-events: none;
+
+	bottom: 0;
+	content: '';
+	left: 0;
+	position: absolute;
+	right: 0;
+	top: 0;
+}

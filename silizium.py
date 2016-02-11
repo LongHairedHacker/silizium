@@ -25,8 +25,8 @@ runner = MQTTRunner(socketio, db_manager)
 
 
 @app.route('/')
-def test_page():
-	return render_template('test.html')
+def index():
+	return render_template('index.html')
 
 
 

@@ -1,0 +1,21 @@
+body {
+  font-family: 'px437_amstradpc1512regular';
+  font-size: 15px;
+  color: #df8522;
+  background-color: #000000;
+  text-shadow: 0px 0px 2px #df8522; }
+
+.overlay {
+  /*** WEBKIT ***/
+  background: -webkit-repeating-linear-gradient(top, transparent 0px, transparent 1px, black 1px, black 2px);
+  -webkit-background-size: 100% 2px;
+  /** MOZILLA **/
+  background: -moz-repeating-linear-gradient(top, transparent 0px, transparent 1px, black 1px, black 2px);
+  -moz-background-size: 100% 2px;
+  pointer-events: none;
+  bottom: 0;
+  content: '';
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0; }
