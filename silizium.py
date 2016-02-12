@@ -28,12 +28,18 @@ runner = MQTTRunner(socketio, db_manager)
 def index():
 	return render_template('index.html')
 
+@socketio.on('get history')
+def handle_get_history(json):
+	if not 'topic' in json.keys() or not 'secondsBack' in json.keys():
+		return {'error': 'Invalid request'}
 
+	history = db_manager.get_history(json['topic'], json['secondsBack'])
+	history = map(lambda msg: {'topic' : msg['topic'], 'time' : msg['time'] * 1000, 'value' : msg['value']}, history)
+	return history
 
 def setup():
 	db_manager.connect()
 	runner.start()
-
 
 
 if __name__ == '__main__':

@@ -8,20 +8,31 @@
 		<script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
 		<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.2.0.min.js') }}"></script>
 		<script type="text/javascript">
+			function addMessage(msg) {
+				var date = new Date(msg.time);
+				var dateStr = date.toLocaleDateString();
+				var timeStr = date.toLocaleTimeString();
+
+				$('.log p:first').before('<p>[' + dateStr + ' ' + timeStr + '] - '
+											+ msg.topic + ' - ' + msg.value.toFixed(2) + ' </p>');
+
+			}
+
     		var socket = io.connect('http://' + document.domain + ':' + location.port);
 			socket.on('connect', function() {
 				socket.on('mqtt_message', function(msg) {
 					console.log(msg);
-
-					var date = new Date(msg.time);
-					var dateStr = date.toLocaleDateString();
-					var timeStr = date.toLocaleTimeString();
-
-					$('.log p:first').before('<p>[' + dateStr + ' ' + timeStr + '] - '
-												+ msg.topic + ' - ' + msg.value.toFixed(2) + ' </p>');
-
-
+					addMessage(msg);
 				});
+
+				socket.emit('get history',
+							{topic: '/esp/temp/0', secondsBack: 10 * 60 * 1000},
+							function(json) {
+								for(var i in json) {
+									addMessage(json[i]);									
+								}
+							}
+				);
 			});
 		</script>
 
