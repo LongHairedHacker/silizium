@@ -1,12 +1,13 @@
 <html>
 	<head>
 		<title>Test</title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/pure/pure-min.css') }}" />
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/font/amstradpc1512.css') }}" />
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
 	</head>
 	<body>
-		<script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
-		<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.2.0.min.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='js/socketio/socket.io.min.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery-2.2.0.min.js') }}"></script>
 		<script type="text/javascript">
 			function addMessage(msg) {
 				var date = new Date(msg.time);
@@ -29,7 +30,7 @@
 							{topic: '/esp/temp/0', secondsBack: 10 * 60 * 1000},
 							function(json) {
 								for(var i in json) {
-									addMessage(json[i]);									
+									addMessage(json[i]);
 								}
 							}
 				);
