@@ -1,4 +1,3 @@
-/// <reference path="definitions/socket.io-client.d.ts"/>
 var silizium;
 (function (silizium) {
     var Socket = (function () {
@@ -42,14 +41,13 @@ var silizium;
         Socket.prototype.getHistory = function (topic, secondsBack, callback) {
             this._socket.emit('get_history', { topic: topic, secondsBack: secondsBack }, function (json) { return callback(json); });
         };
+        Socket.prototype.getLastMessage = function (topic, callback) {
+            this._socket.emit('get_last_message', { topic: topic }, function (json) { return callback(json); });
+        };
         return Socket;
-    })();
+    }());
     silizium.Socket = Socket;
 })(silizium || (silizium = {}));
-/// <reference path="definitions/es6-shim.d.ts"/>
-/// <reference path="definitions/jquery.d.ts" />
-/// <reference path="definitions/socket.io-client.d.ts"/>
-/// <reference path="siliziumsocket.ts"/>
 "use strict";
 function addMessage(msg) {
     var date = new Date(msg.time);

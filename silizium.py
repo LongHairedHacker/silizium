@@ -37,6 +37,16 @@ def handle_get_history(json):
 	history = map(lambda msg: {'topic' : msg['topic'], 'time' : js_timestamp(msg['time']), 'value' : msg['value']}, history)
 	return history
 
+@socketio.on('get_last_message')
+def handle_get_history(json):
+	if not 'topic' in json.keys():
+		return {'error': 'Invalid request'}
+
+	msg = db_manager.get_last_message(json['topic'])
+	msg = {'topic' : msg['topic'], 'time' : js_timestamp(msg['time']), 'value' : msg['value']}
+	return msg
+
+
 def setup():
 	db_manager.connect()
 	runner.start()

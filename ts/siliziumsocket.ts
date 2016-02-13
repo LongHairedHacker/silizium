@@ -81,6 +81,11 @@ module silizium {
 								(json : MQTTMessage[]) => callback(json));
 		}
 
+		public getLastMessage(topic : string, callback : MQTTMessageCallback) {
+			this._socket.emit('get_last_message',
+								{topic: topic},
+								(json : MQTTMessage) => callback(json));
+		}
 
 	}
 }

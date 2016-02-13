@@ -9,6 +9,7 @@ from timeutils import now
 class DBManager(object):
 	STATEMENTS = {
 		'insert_message' : "INSERT INTO messages (time, topic, value) VALUES ($1,$2,$3)",
+		'get_last_message' : "SELECT time, topic, value FROM messages WHERE topic = $1 ORDER BY time DESC LIMIT 1",
 		'get_history' : "SELECT time, topic, value FROM messages WHERE topic = $1 AND time >= $2 ORDER BY time",
 	}
 
@@ -18,20 +19,20 @@ class DBManager(object):
 
 
 	def connect(self):
-		self.conn = psycopg2.connect(self._connectionString)
+		self._conn = psycopg2.connect(self._connectionString)
 
-		cur = self.conn.cursor()
+		cur = self._conn.cursor()
 
 		for name, query in self.STATEMENTS.items():
 			cur.execute("PREPARE %s AS %s" % (name, query))
 
 
 	def insert_message(self, time, topic, value):
-		cur = self.conn.cursor()
+		cur = self._conn.cursor()
 
 		cur.execute("EXECUTE insert_message (%s, %s, %s)",
 					(time, topic, value))
-		self.conn.commit()
+		self._conn.commit()
 
 
 	def _result_to_dict(self, result):
@@ -45,7 +46,7 @@ class DBManager(object):
 
 
 	def get_history(self, topic, seconds_back):
-		cur = self.conn.cursor()
+		cur = self._conn.cursor()
 
 		start = now() - timedelta(seconds = seconds_back)
 		cur.execute("EXECUTE get_history (%s, %s)",
@@ -54,3 +55,12 @@ class DBManager(object):
 		data = cur.fetchall()
 
 		return map(self._result_to_dict, data)
+
+
+	def get_last_message(self, topic):
+		cur = self._conn.cursor()
+
+		cur.execute("EXECUTE get_last_message (%s)", (topic,))
+		data = cur.fetchone()
+
+		return self._result_to_dict(data)
