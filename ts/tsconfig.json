@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+      "out": "../static/js/silizium.js",
+      "target": "es5"
+    },
+    "files": [
+      "silizium.ts",
+      "siliziumsocket.ts"
+    ]
+}

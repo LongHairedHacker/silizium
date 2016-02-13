@@ -28,7 +28,7 @@ runner = MQTTRunner(socketio, db_manager)
 def index():
 	return render_template('index.html')
 
-@socketio.on('get history')
+@socketio.on('get_history')
 def handle_get_history(json):
 	if not 'topic' in json.keys() or not 'secondsBack' in json.keys():
 		return {'error': 'Invalid request'}

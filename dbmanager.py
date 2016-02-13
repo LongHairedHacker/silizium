@@ -35,8 +35,6 @@ class DBManager(object):
 		keys = ['time', 'topic', 'value']
 		data = {}
 
-		print result
-
 		for i in range(0, len(keys)):
 			data[keys[i]] = result[i]
 
@@ -53,7 +51,5 @@ class DBManager(object):
 					(topic, datetime.utcfromtimestamp(start)))
 
 		data = cur.fetchall()
-
-		print data
 
 		return map(self._result_to_dict, data)
