@@ -17,4 +17,5 @@ Licenses
     [CC-BY-SA4.0](static/css/font/LICENSE) by [VileR](http://int10h.org/)
 * [Socket.io](http://socket.io/) [MIT License](static/js/socketio/LICENSE)
 * [jquery](https://jquery.com/) [BSD License](static/js/jquery/LICENSE)
+* [es6-shim](https://github.com/paulmillr/es6-shim) [MIT License](static/js/es6-shim/LICENSE.md)
 * [pure](http://purecss.io/) [BSD License](static/css/pure/LICENSE.md)
