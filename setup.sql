@@ -15,14 +15,14 @@ CREATE DATABASE silizium
 -- DROP TABLE messages;
 CREATE TABLE messages
 (
- "time" timestamp without time zone NOT NULL,
- topic character varying NOT NULL,
- value double precision
- CONSTRAINT primary_key PRIMARY KEY (topic, "time")
+  "time" timestamp with time zone NOT NULL,
+  topic character varying NOT NULL,
+  value double precision,
+  CONSTRAINT primary_key PRIMARY KEY (topic, "time")
 )
 WITH (
- OIDS=FALSE,
- autovacuum_enabled=true
+  OIDS=FALSE,
+  autovacuum_enabled=true
 );
 ALTER TABLE messages
- OWNER TO silizium;
+  OWNER TO silizium;

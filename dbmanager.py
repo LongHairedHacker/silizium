@@ -1,8 +1,10 @@
 #!/bin/env python2
 import psycopg2
-import time
 
-from datetime import datetime
+from datetime import timedelta
+
+from timeutils import now
+
 
 class DBManager(object):
 	STATEMENTS = {
@@ -19,6 +21,7 @@ class DBManager(object):
 		self.conn = psycopg2.connect(self._connectionString)
 
 		cur = self.conn.cursor()
+
 		for name, query in self.STATEMENTS.items():
 			cur.execute("PREPARE %s AS %s" % (name, query))
 
@@ -27,7 +30,7 @@ class DBManager(object):
 		cur = self.conn.cursor()
 
 		cur.execute("EXECUTE insert_message (%s, %s, %s)",
-					(datetime.utcfromtimestamp(time), topic, value))
+					(time, topic, value))
 		self.conn.commit()
 
 
@@ -38,17 +41,15 @@ class DBManager(object):
 		for i in range(0, len(keys)):
 			data[keys[i]] = result[i]
 
-		data['time'] = time.mktime(data['time'].timetuple())
-
 		return data
 
 
 	def get_history(self, topic, seconds_back):
 		cur = self.conn.cursor()
 
-		start = time.time() - seconds_back
+		start = now() - timedelta(seconds = seconds_back)
 		cur.execute("EXECUTE get_history (%s, %s)",
-					(topic, datetime.utcfromtimestamp(start)))
+					(topic, start))
 
 		data = cur.fetchall()
 

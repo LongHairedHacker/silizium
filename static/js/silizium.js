@@ -55,7 +55,7 @@ function addMessage(msg) {
     var date = new Date(msg.time);
     var dateStr = date.toLocaleDateString();
     var timeStr = date.toLocaleTimeString();
-    $('.log p:first').before('<p>[' + dateStr + ' ' + timeStr + '] - '
+    $('.log p:first').before('<p>[' + msg.time + ' ' + dateStr + ' ' + timeStr + '] - '
         + msg.topic + ' - ' + msg.value.toFixed(2) + ' </p>');
 }
 var socket = new silizium.Socket('http://' + document.domain + ':' + location.port);

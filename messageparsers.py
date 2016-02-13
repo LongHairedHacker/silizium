@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
 import traceback
-import time
+
+from timeutils import now
 
 _mqtt_message_parsers = {}
 
@@ -29,6 +30,6 @@ def mqtt_parse_message(parser, topic, message):
 def float_parser(message):
 	value = float(message)
 
-	return {'time': time.time(), 'value': value}
+	return {'time': now(), 'value': value}
 
 mqtt_register_message_parser('float', float_parser)

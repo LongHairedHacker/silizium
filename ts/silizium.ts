@@ -11,7 +11,7 @@ function addMessage(msg : silizium.MQTTMessage) : void {
 	var dateStr = date.toLocaleDateString();
 	var timeStr = date.toLocaleTimeString();
 
-	$('.log p:first').before('<p>[' + dateStr + ' ' + timeStr + '] - '
+	$('.log p:first').before('<p>[' + msg.time + ' ' + dateStr + ' ' + timeStr + '] - '
 								+ msg.topic + ' - ' + msg.value.toFixed(2) + ' </p>');
 
 }

@@ -3,7 +3,6 @@ import eventlet
 eventlet.monkey_patch()
 
 import os
-import time
 import threading
 import atexit
 
@@ -13,6 +12,7 @@ from flask_socketio import SocketIO
 
 from dbmanager import DBManager
 from mqtt import MQTTRunner
+from timeutils import js_timestamp
 
 from config import DB_CONNECTION_STRING
 
@@ -34,7 +34,7 @@ def handle_get_history(json):
 		return {'error': 'Invalid request'}
 
 	history = db_manager.get_history(json['topic'], json['secondsBack'])
-	history = map(lambda msg: {'topic' : msg['topic'], 'time' : msg['time'] * 1000, 'value' : msg['value']}, history)
+	history = map(lambda msg: {'topic' : msg['topic'], 'time' : js_timestamp(msg['time']), 'value' : msg['value']}, history)
 	return history
 
 def setup():

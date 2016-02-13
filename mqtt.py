@@ -2,13 +2,14 @@
 
 import threading
 import atexit
-import time
 
 import paho.mqtt.client as mqtt
 
+from timeutils import js_timestamp
+from messageparsers import mqtt_parse_message
+
 from config import MQTT_BROKER, MQTT_USER, MQTT_PASSWORD, MQTT_TOPICS
 
-from messageparsers import mqtt_parse_message
 
 class MQTTRunner(object):
 
@@ -23,7 +24,7 @@ class MQTTRunner(object):
 
         data = mqtt_parse_message(MQTT_TOPICS[msg.topic], msg.topic, msg.payload)
         if data != None:
-            timestamp = data['time'] * 1000.0
+            timestamp = js_timestamp(data['time'])
             self._socketio.emit("mqtt_message", {'topic' : msg.topic, 'time': timestamp, 'value': data['value']})
 
             self._dbmanager.insert_message(data['time'], msg.topic, data['value'])
