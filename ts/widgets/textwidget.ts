@@ -36,7 +36,7 @@ module silizium.widgets {
 		}
 
 		protected _updateText(msg : MQTTMessage) {
-			this._value.text(' ' + msg.value);
+			this._value.text(msg.value);
 		}
 	}
 

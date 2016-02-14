@@ -32,5 +32,5 @@ module silizium.widgets {
 
 	export var widgetRegistry : {[name : string] : widgetConstructor} = {};
 
-	export const widgetMaxWidth : number = 8;
+	export const widgetMaxWidth : number = 5;
 }

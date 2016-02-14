@@ -27,7 +27,7 @@ var silizium;
         widgets.BaseWidget = BaseWidget;
         ;
         widgets.widgetRegistry = {};
-        widgets.widgetMaxWidth = 8;
+        widgets.widgetMaxWidth = 5;
     })(widgets = silizium.widgets || (silizium.widgets = {}));
 })(silizium || (silizium = {}));
 var silizium;
@@ -155,7 +155,7 @@ var silizium;
                 this._socket.onMQTTMessage(this._config.topic, function (msg) { return _this._updateText(msg); });
             };
             TextWidget.prototype._updateText = function (msg) {
-                this._value.text(' ' + msg.value);
+                this._value.text(msg.value);
             };
             return TextWidget;
         }(widgets.BaseWidget));

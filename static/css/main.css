@@ -26,8 +26,11 @@ h1 {
 .grid-box {
   font-family: 'px437_amstradpc1512regular';
   font-size: 15px;
-  margin: 2px;
+  margin: 6px;
   text-align: center; }
+
+#widget-container {
+  margin: 6px; }
 
 .text-widget .value {
   margin-top: 6px;

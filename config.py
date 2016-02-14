@@ -21,7 +21,16 @@ TEXT_ROOMTEMP = {
 	'label' : 'Room Temperature'
 }
 
+OTHER_ROOMTEMP = {
+	'type': 'text-widget',
+	'formater' : 'temperature',
+	'width' : 1,
+	'topic' : '/esp/temp/0',
+	'label' : 'Another Temp'
+}
+
+
 
 WIDGETS = [
-	[TEXT_ROOMTEMP],
+	[TEXT_ROOMTEMP, OTHER_ROOMTEMP],
 ]
