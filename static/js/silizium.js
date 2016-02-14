@@ -1,3 +1,35 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var silizium;
+(function (silizium) {
+    var widgets;
+    (function (widgets) {
+        var BaseWidget = (function () {
+            function BaseWidget(_socket, _element, _config) {
+                var _this = this;
+                this._socket = _socket;
+                this._element = _element;
+                this._config = _config;
+                if (typeof (_config.type) !== "string" || typeof (_config.formater) !== "string" || typeof (_config.width) !== "number") {
+                    console.log(_config);
+                    throw new Error("Invalid config format for WidgetConfigBase");
+                }
+                _socket.onConnection(function () {
+                    _this._registerCallbacks();
+                });
+            }
+            ;
+            return BaseWidget;
+        }());
+        widgets.BaseWidget = BaseWidget;
+        ;
+        widgets.widgetRegistry = {};
+        widgets.widgetMaxWidth = 8;
+    })(widgets = silizium.widgets || (silizium.widgets = {}));
+})(silizium || (silizium = {}));
 var silizium;
 (function (silizium) {
     var Socket = (function () {
@@ -38,6 +70,14 @@ var silizium;
                 });
             }
         };
+        Socket.prototype.getWidgets = function (callback) {
+            this._socket.emit('get_widgets', {}, function (json) {
+                if (!(json instanceof Array) || !(json.every(function (row) { return row instanceof Array; }))) {
+                    throw new Error("Invalid widget config.");
+                }
+                callback(json);
+            });
+        };
         Socket.prototype.getHistory = function (topic, secondsBack, callback) {
             this._socket.emit('get_history', { topic: topic, secondsBack: secondsBack }, function (json) { return callback(json); });
         };
@@ -49,17 +89,77 @@ var silizium;
     silizium.Socket = Socket;
 })(silizium || (silizium = {}));
 "use strict";
-function addMessage(msg) {
-    var date = new Date(msg.time);
-    var dateStr = date.toLocaleDateString();
-    var timeStr = date.toLocaleTimeString();
-    $('.log p:first').before('<p>[' + msg.time + ' ' + dateStr + ' ' + timeStr + '] - '
-        + msg.topic + ' - ' + msg.value.toFixed(2) + ' </p>');
-}
-var socket = new silizium.Socket('http://' + document.domain + ':' + location.port);
-socket.onConnection(function () {
-    socket.getHistory('/esp/temp/0', 10 * 60, function (history) {
-        history.forEach(addMessage);
-        socket.onMQTTMessage('/esp/temp/0', addMessage);
+var silizium;
+(function (silizium) {
+    function addMessage(msg) {
+        var date = new Date(msg.time);
+        var dateStr = date.toLocaleDateString();
+        var timeStr = date.toLocaleTimeString();
+        $('.log p:first').before('<p>[' + msg.time + ' ' + dateStr + ' ' + timeStr + '] - '
+            + msg.topic + ' - ' + msg.value.toFixed(2) + ' </p>');
+    }
+    var socket = new silizium.Socket('http://' + document.domain + ':' + location.port);
+    socket.onConnection(function () {
+        socket.getHistory('/esp/temp/0', 10 * 60, function (history) {
+            history.forEach(addMessage);
+            socket.onMQTTMessage('/esp/temp/0', addMessage);
+        });
+        socket.getWidgets(setupWidgets);
     });
-});
+    function setupWidgets(widgetConfig) {
+        var widgetContainer = $('#widget-container');
+        for (var _i = 0, widgetConfig_1 = widgetConfig; _i < widgetConfig_1.length; _i++) {
+            var row = widgetConfig_1[_i];
+            var rowElement = $('<div class="pure-g"></div>').appendTo(widgetContainer);
+            var rowWidth = 0;
+            for (var _a = 0, row_1 = row; _a < row_1.length; _a++) {
+                var widget = row_1[_a];
+                if (typeof (widget.width) !== 'number' || widget.width < 1 || widget.width > silizium.widgets.widgetMaxWidth) {
+                    throw new Error("Widget width not set or Invalid");
+                }
+                var gridElement = $('<div class="pure-u-1 pure-u-md-'
+                    + widget.width + '-' + silizium.widgets.widgetMaxWidth + '"></div>').appendTo(rowElement);
+                var widgetElement = $('<div class="grid-box"></div>').appendTo(gridElement);
+                if (typeof (widget.type) !== 'string' || silizium.widgets.widgetRegistry[widget.type] === undefined) {
+                    throw new Error("Invalid type attribute in widget config.");
+                }
+                new silizium.widgets.widgetRegistry[widget.type](socket, widgetElement, widget);
+                rowWidth += widget.width;
+            }
+            var rest = silizium.widgets.widgetMaxWidth - rowWidth;
+            rowElement.append('<div class="pure-u-1 pure-u-md-' + rest + '-' + silizium.widgets.widgetMaxWidth + '"></div>');
+        }
+    }
+})(silizium || (silizium = {}));
+var silizium;
+(function (silizium) {
+    var widgets;
+    (function (widgets) {
+        var TextWidget = (function (_super) {
+            __extends(TextWidget, _super);
+            function TextWidget(_socket, _element, _config) {
+                var _this = this;
+                _super.call(this, _socket, _element, _config);
+                this._config = _config;
+                if (typeof (_config.topic) !== "string" || typeof (_config.label) !== "string") {
+                    console.log(_config);
+                    throw new Error("Invalid config for TextWidgetConfig");
+                }
+                _element.addClass('text-widget');
+                $('<div class="label">' + _config.label + '</div>').appendTo(_element);
+                this._value = $('<div class="value"></div>').appendTo(_element);
+                _socket.getLastMessage(_config.topic, function (msg) { return _this._updateText(msg); });
+            }
+            TextWidget.prototype._registerCallbacks = function () {
+                var _this = this;
+                this._socket.onMQTTMessage(this._config.topic, function (msg) { return _this._updateText(msg); });
+            };
+            TextWidget.prototype._updateText = function (msg) {
+                this._value.text(' ' + msg.value);
+            };
+            return TextWidget;
+        }(widgets.BaseWidget));
+        widgets.TextWidget = TextWidget;
+        widgets.widgetRegistry['text-widget'] = TextWidget;
+    })(widgets = silizium.widgets || (silizium.widgets = {}));
+})(silizium || (silizium = {}));

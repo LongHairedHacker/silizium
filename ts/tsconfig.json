@@ -5,6 +5,8 @@
     },
     "files": [
       "silizium.ts",
-      "siliziumsocket.ts"
+      "siliziumsocket.ts",
+      "widgets/basewidget.ts",
+      "widgets/textwidget.ts"
     ]
 }

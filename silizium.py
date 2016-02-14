@@ -14,7 +14,7 @@ from dbmanager import DBManager
 from mqtt import MQTTRunner
 from timeutils import js_timestamp
 
-from config import DB_CONNECTION_STRING
+from config import DB_CONNECTION_STRING, WIDGETS
 
 
 app = Flask(__name__)
@@ -45,6 +45,11 @@ def handle_get_history(json):
 	msg = db_manager.get_last_message(json['topic'])
 	msg = {'topic' : msg['topic'], 'time' : js_timestamp(msg['time']), 'value' : msg['value']}
 	return msg
+
+@socketio.on('get_widgets')
+def handle_get_history(json):
+	return WIDGETS
+
 
 
 def setup():

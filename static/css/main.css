@@ -19,3 +19,16 @@ body {
   position: absolute;
   right: 0;
   top: 0; }
+
+h1 {
+  font-family: 'px437_amstradpc1512regular'; }
+
+.grid-box {
+  font-family: 'px437_amstradpc1512regular';
+  font-size: 15px;
+  margin: 2px;
+  text-align: center; }
+
+.text-widget .value {
+  margin-top: 6px;
+  font-size: 20px; }

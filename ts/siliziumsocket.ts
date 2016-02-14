@@ -1,5 +1,7 @@
 /// <reference path="definitions/socket.io-client.d.ts"/>
 
+/// <reference path="widgets/basewidget.ts"/>
+
 module silizium {
 
 	interface ConnectionCallback {
@@ -14,6 +16,10 @@ module silizium {
 
 	interface MQTTMessageCallback {
 		(msg : MQTTMessage) : void;
+	}
+
+	interface WidgetsCallback {
+		(widgets : widgets.WidgetConfigBase[][]) : void;
 	}
 
 	interface HistoryCallback {
@@ -72,6 +78,16 @@ module silizium {
 					callback(msg);
 				});
 			}
+		}
+
+		public getWidgets(callback: WidgetsCallback) {
+			this._socket.emit('get_widgets', {}, (json : widgets.WidgetConfigBase[][]) => {
+				if(!(json instanceof Array) || !(json.every((row) => row instanceof Array))) {
+					throw new Error("Invalid widget config.");
+				}
+
+				callback(json)
+			});
 		}
 
 

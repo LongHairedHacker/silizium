@@ -3,19 +3,21 @@ $primary_color: #df8522;
 
 $scan_line_width : 1px;
 
-body {
+
+@mixin fix_font($size) {
 	font: {
 		family: 'px437_amstradpc1512regular';
-		size: 15px;
+		size: $size;
 	}
+}
+
+body {
+	@include fix_font(15px);
 
 	color: $primary_color;
 	background-color: $background_color;
-
 	text-shadow: 0px 0px 2px $primary_color;
-
 }
-
 
 .overlay {
 	/*** WEBKIT ***/
@@ -46,4 +48,23 @@ body {
 	position: absolute;
 	right: 0;
 	top: 0;
+}
+
+h1 {
+	font-family: 'px437_amstradpc1512regular';
+}
+
+
+.grid-box {
+	@include fix_font(15px);
+
+	margin: 2px;
+	text-align: center;
+}
+
+.text-widget {
+	.value {
+		margin-top : 6px;
+		font-size: 20px;
+	}
 }
