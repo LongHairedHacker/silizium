@@ -15,18 +15,16 @@ MQTT_TOPICS = {
 
 TEXT_ROOMTEMP = {
 	'type': 'text-widget',
-	'formater' : 'temperature',
+	'topics' : {'/esp/temp/0': 'temperature'},
 	'width' : 1,
-	'topic' : '/esp/temp/0',
 	'label' : 'Room Temperature'
 }
 
 OTHER_ROOMTEMP = {
 	'type': 'text-widget',
-	'formater' : 'temperature',
+	'topics' : {'/esp/temp/0': 'temperature'},
 	'width' : 1,
-	'topic' : '/esp/temp/0',
-	'label' : 'Another Temp'
+	'label' : 'Another Temperature'
 }
 
 

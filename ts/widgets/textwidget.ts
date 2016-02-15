@@ -7,7 +7,6 @@
 module silizium.widgets {
 
 	export interface TextWidgetConfig extends WidgetConfigBase {
-		topic : string;
 		label : string;
 	}
 
@@ -18,7 +17,11 @@ module silizium.widgets {
 		constructor(_socket : Socket, _element : JQuery, protected _config : TextWidgetConfig) {
 			super(_socket, _element, _config);
 
-			if(typeof(_config.topic) !== "string" || typeof(_config.label) !== "string") {
+			if(Object.keys(_config.topics).length !== 1) {
+				throw new Error("TextWidget takes exactly one topic");
+			}
+
+			if(typeof(_config.label) !== "string") {
 				console.log(_config);
 				throw new Error("Invalid config for TextWidgetConfig");
 			}
@@ -27,16 +30,11 @@ module silizium.widgets {
 			$('<div class="label">' + _config.label + '</div>').appendTo(_element);
 			this._value = $('<div class="value"></div>').appendTo(_element);
 
-			_socket.getLastMessage(_config.topic, (msg) => this._updateText(msg));
+			_socket.getLastMessage(Object.keys(_config.topics)[0], (msg) => this._onMQTTMessage(msg));
 		}
 
-
-		protected _registerCallbacks() {
-			this._socket.onMQTTMessage(this._config.topic, (msg) => this._updateText(msg));
-		}
-
-		protected _updateText(msg : MQTTMessage) {
-			this._value.text(msg.value);
+		protected _onMQTTMessage(msg : MQTTMessage) {
+			this._value.text(this._format(msg));
 		}
 	}
 

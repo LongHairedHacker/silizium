@@ -5,6 +5,18 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var silizium;
 (function (silizium) {
+    silizium.formatters = {};
+    function float(value) {
+        return value.toFixed(3);
+    }
+    silizium.formatters['float'] = float;
+    function temperature(value) {
+        return value.toFixed(2) + '°C';
+    }
+    silizium.formatters['temperature'] = temperature;
+})(silizium || (silizium = {}));
+var silizium;
+(function (silizium) {
     var widgets;
     (function (widgets) {
         var BaseWidget = (function () {
@@ -13,7 +25,10 @@ var silizium;
                 this._socket = _socket;
                 this._element = _element;
                 this._config = _config;
-                if (typeof (_config.type) !== "string" || typeof (_config.formater) !== "string" || typeof (_config.width) !== "number") {
+                if (typeof (_config.type) !== "string" ||
+                    !(_config.topics instanceof Object) ||
+                    Object.keys(_config.topics).length < 1 ||
+                    typeof (_config.width) !== "number") {
                     console.log(_config);
                     throw new Error("Invalid config format for WidgetConfigBase");
                 }
@@ -22,6 +37,24 @@ var silizium;
                 });
             }
             ;
+            BaseWidget.prototype._registerCallbacks = function () {
+                var _this = this;
+                for (var topic in this._config.topics) {
+                    this._socket.onMQTTMessage(topic, function (msg) { return _this._onMQTTMessage(msg); });
+                }
+            };
+            BaseWidget.prototype._format = function (msg) {
+                if (this._config.topics[msg.topic] === undefined) {
+                    console.log(msg);
+                    throw new Error("No formatter defined for " + msg.topic);
+                }
+                var formatterName = this._config.topics[msg.topic];
+                if (silizium.formatters[formatterName] === undefined) {
+                    console.log(msg);
+                    throw new Error("No formatter named " + formatterName);
+                }
+                return silizium.formatters[formatterName](msg.value);
+            };
             return BaseWidget;
         }());
         widgets.BaseWidget = BaseWidget;
@@ -141,21 +174,20 @@ var silizium;
                 var _this = this;
                 _super.call(this, _socket, _element, _config);
                 this._config = _config;
-                if (typeof (_config.topic) !== "string" || typeof (_config.label) !== "string") {
+                if (Object.keys(_config.topics).length !== 1) {
+                    throw new Error("TextWidget takes exactly one topic");
+                }
+                if (typeof (_config.label) !== "string") {
                     console.log(_config);
                     throw new Error("Invalid config for TextWidgetConfig");
                 }
                 _element.addClass('text-widget');
                 $('<div class="label">' + _config.label + '</div>').appendTo(_element);
                 this._value = $('<div class="value"></div>').appendTo(_element);
-                _socket.getLastMessage(_config.topic, function (msg) { return _this._updateText(msg); });
+                _socket.getLastMessage(Object.keys(_config.topics)[0], function (msg) { return _this._onMQTTMessage(msg); });
             }
-            TextWidget.prototype._registerCallbacks = function () {
-                var _this = this;
-                this._socket.onMQTTMessage(this._config.topic, function (msg) { return _this._updateText(msg); });
-            };
-            TextWidget.prototype._updateText = function (msg) {
-                this._value.text(msg.value);
+            TextWidget.prototype._onMQTTMessage = function (msg) {
+                this._value.text(this._format(msg));
             };
             return TextWidget;
         }(widgets.BaseWidget));

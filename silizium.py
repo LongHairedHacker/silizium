@@ -28,6 +28,7 @@ runner = MQTTRunner(socketio, db_manager)
 def index():
 	return render_template('index.html')
 
+
 @socketio.on('get_history')
 def handle_get_history(json):
 	if not 'topic' in json.keys() or not 'secondsBack' in json.keys():
@@ -37,8 +38,10 @@ def handle_get_history(json):
 	history = map(lambda msg: {'topic' : msg['topic'], 'time' : js_timestamp(msg['time']), 'value' : msg['value']}, history)
 	return history
 
+
 @socketio.on('get_last_message')
 def handle_get_history(json):
+	print json
 	if not 'topic' in json.keys():
 		return {'error': 'Invalid request'}
 
@@ -46,10 +49,10 @@ def handle_get_history(json):
 	msg = {'topic' : msg['topic'], 'time' : js_timestamp(msg['time']), 'value' : msg['value']}
 	return msg
 
+
 @socketio.on('get_widgets')
 def handle_get_history(json):
 	return WIDGETS
-
 
 
 def setup():
