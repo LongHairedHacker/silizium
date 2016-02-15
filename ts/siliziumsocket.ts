@@ -40,6 +40,8 @@ module silizium {
 			this._socket = io.connect(url);
 
 			this._socket.on('connect', () : void => {
+				this._messageCallbacks = {};
+
 				this._socket.on('mqtt_message', (msg : MQTTMessage) : void => this._emitMQTTMessage(msg));
 
 				this._connectionCallbacks.forEach((callback) => {

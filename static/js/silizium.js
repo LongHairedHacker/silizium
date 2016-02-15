@@ -104,6 +104,7 @@ var silizium;
             this._messageCallbacks = {};
             this._socket = io.connect(url);
             this._socket.on('connect', function () {
+                _this._messageCallbacks = {};
                 _this._socket.on('mqtt_message', function (msg) { return _this._emitMQTTMessage(msg); });
                 _this._connectionCallbacks.forEach(function (callback) {
                     callback();
@@ -156,6 +157,7 @@ var silizium;
 "use strict";
 var silizium;
 (function (silizium) {
+    var widgetInstances = [];
     function addMessage(msg) {
         var date = new Date(msg.time);
         var dateStr = date.toLocaleDateString();
@@ -172,7 +174,9 @@ var silizium;
         socket.getWidgets(setupWidgets);
     });
     function setupWidgets(widgetConfig) {
+        widgetInstances = [];
         var widgetContainer = $('#widget-container');
+        widgetContainer.empty();
         for (var _i = 0, widgetConfig_1 = widgetConfig; _i < widgetConfig_1.length; _i++) {
             var row = widgetConfig_1[_i];
             var rowElement = $('<div class="pure-g"></div>').appendTo(widgetContainer);
@@ -184,7 +188,7 @@ var silizium;
                 var gridElement = $('<div class="pure-u-1 pure-u-md-'
                     + widget.width + '-' + silizium.widgets.widgetMaxWidth + '"></div>').appendTo(rowElement);
                 var widgetElement = $('<div class="grid-box"></div>').appendTo(gridElement);
-                new silizium.widgets.widgetRegistry[widget.type](socket, widgetElement, widget);
+                widgetInstances.push(new silizium.widgets.widgetRegistry[widget.type](socket, widgetElement, widget));
                 rowWidth += widget.width;
             }
             var rest = silizium.widgets.widgetMaxWidth - rowWidth;

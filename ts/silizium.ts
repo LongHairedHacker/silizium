@@ -8,6 +8,8 @@
 "use strict";
 module silizium {
 
+	var widgetInstances : widgets.BaseWidget[] = [];
+
 	function addMessage(msg : silizium.MQTTMessage) : void {
 		var date = new Date(msg.time);
 		var dateStr = date.toLocaleDateString();
@@ -31,8 +33,10 @@ module silizium {
 
 
 	function setupWidgets(widgetConfig : widgets.WidgetConfigBase[][]) {
+		widgetInstances = [];
 
 		var widgetContainer = $('#widget-container');
+		widgetContainer.empty();
 
 		for(var row of widgetConfig) {
 
@@ -47,7 +51,7 @@ module silizium {
 										+ widget.width + '-' + widgets.widgetMaxWidth + '"></div>').appendTo(rowElement);
 				var widgetElement = $('<div class="grid-box"></div>').appendTo(gridElement);
 
-				new widgets.widgetRegistry[widget.type](socket, widgetElement, widget);
+				widgetInstances.push(new widgets.widgetRegistry[widget.type](socket, widgetElement, widget));
 
 				rowWidth += widget.width;
 			}
