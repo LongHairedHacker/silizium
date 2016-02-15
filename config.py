@@ -20,15 +20,17 @@ TEXT_ROOMTEMP = {
 	'label' : 'Room Temperature'
 }
 
-OTHER_ROOMTEMP = {
-	'type': 'text-widget',
+GAGE_ROOMTEMP = {
+	'type': 'gage-widget',
 	'topics' : {'/esp/temp/0': 'temperature'},
 	'width' : 1,
-	'label' : 'Another Temperature'
+	'label' : 'Another\nTemperature',
+	'min' : -10.0,
+	'max' : 40.0
 }
 
 
 
 WIDGETS = [
-	[TEXT_ROOMTEMP, OTHER_ROOMTEMP],
+	[TEXT_ROOMTEMP, GAGE_ROOMTEMP],
 ]

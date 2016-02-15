@@ -224,3 +224,47 @@ var silizium;
         widgets.widgetRegistry['text-widget'] = TextWidget;
     })(widgets = silizium.widgets || (silizium.widgets = {}));
 })(silizium || (silizium = {}));
+var silizium;
+(function (silizium) {
+    var widgets;
+    (function (widgets) {
+        ;
+        var GageWidget = (function (_super) {
+            __extends(GageWidget, _super);
+            function GageWidget(_socket, _element, _config) {
+                var _this = this;
+                _super.call(this, _socket, _element, _config);
+                this._config = _config;
+                if (Object.keys(_config.topics).length !== 1) {
+                    throw new Error("GageWidget takes exactly one topic");
+                }
+                silizium.jsonutils.expectProperty('label', 'string', _config);
+                silizium.jsonutils.expectProperty('min', 'number', _config);
+                silizium.jsonutils.expectProperty('min', 'number', _config);
+                _element.addClass('gage-widget');
+                this._gage = new JustGage({
+                    parentNode: _element.get(0),
+                    title: _config.label,
+                    value: 0,
+                    min: _config.min,
+                    max: _config.max,
+                    decimals: true,
+                    hideMinMax: true,
+                    gaugeColor: "#42270a",
+                    levelColors: ["#df8522"],
+                    titleFontColor: "#df8522",
+                    titleFontFamily: "px437_amstradpc1512regular",
+                    valueFontColor: "#df8522",
+                    valueFontFamily: "px437_amstradpc1512regular"
+                });
+                _socket.getLastMessage(Object.keys(_config.topics)[0], function (msg) { return _this._onMQTTMessage(msg); });
+            }
+            GageWidget.prototype._onMQTTMessage = function (msg) {
+                this._gage.refresh(msg.value);
+            };
+            return GageWidget;
+        }(widgets.BaseWidget));
+        widgets.GageWidget = GageWidget;
+        widgets.widgetRegistry['gage-widget'] = GageWidget;
+    })(widgets = silizium.widgets || (silizium.widgets = {}));
+})(silizium || (silizium = {}));

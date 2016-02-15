@@ -9,6 +9,7 @@
       "jsonutils.ts",
       "formatters.ts",
       "widgets/basewidget.ts",
-      "widgets/textwidget.ts"
+      "widgets/textwidget.ts",
+      "widgets/gagewidget.ts"
     ]
 }
