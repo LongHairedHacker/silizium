@@ -5,6 +5,41 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var silizium;
 (function (silizium) {
+    var jsonutils;
+    (function (jsonutils) {
+        function expectProperty(name, type, json) {
+            if (json[name] === undefined) {
+                console.log(json);
+                throw new Error("Expected property " + name);
+            }
+            if (typeof (json[name]) !== type) {
+                console.log(json);
+                throw new Error("Expected property " + name + " to be of type " + type);
+            }
+        }
+        jsonutils.expectProperty = expectProperty;
+        function expectNumber(name, min, max, json) {
+            expectProperty(name, 'number', json);
+            if (json[name] < min || json[name] > max) {
+                throw new Error("Property " + name + " should be in range " + min + " to " + max);
+            }
+        }
+        jsonutils.expectNumber = expectNumber;
+        function expectMap(elementType, json) {
+            if (Object.keys(json).length === 0) {
+                throw new Error("Expected a map, got empty object");
+            }
+            for (var key in json) {
+                if (typeof (json[key]) !== elementType) {
+                    throw new Error("Expected elements of type " + elementType + " for " + key);
+                }
+            }
+        }
+        jsonutils.expectMap = expectMap;
+    })(jsonutils = silizium.jsonutils || (silizium.jsonutils = {}));
+})(silizium || (silizium = {}));
+var silizium;
+(function (silizium) {
     silizium.formatters = {};
     function float(value) {
         return value.toFixed(3);
@@ -25,13 +60,10 @@ var silizium;
                 this._socket = _socket;
                 this._element = _element;
                 this._config = _config;
-                if (typeof (_config.type) !== "string" ||
-                    !(_config.topics instanceof Object) ||
-                    Object.keys(_config.topics).length < 1 ||
-                    typeof (_config.width) !== "number") {
-                    console.log(_config);
-                    throw new Error("Invalid config format for WidgetConfigBase");
-                }
+                silizium.jsonutils.expectProperty('type', 'string', _config);
+                silizium.jsonutils.expectProperty('width', 'number', _config);
+                silizium.jsonutils.expectProperty('topics', 'object', _config);
+                silizium.jsonutils.expectMap('string', _config.topics);
                 _socket.onConnection(function () {
                     _this._registerCallbacks();
                 });
@@ -147,15 +179,11 @@ var silizium;
             var rowWidth = 0;
             for (var _a = 0, row_1 = row; _a < row_1.length; _a++) {
                 var widget = row_1[_a];
-                if (typeof (widget.width) !== 'number' || widget.width < 1 || widget.width > silizium.widgets.widgetMaxWidth) {
-                    throw new Error("Widget width not set or Invalid");
-                }
+                silizium.jsonutils.expectNumber('width', 1, silizium.widgets.widgetMaxWidth, widget);
+                silizium.jsonutils.expectProperty('type', 'string', widget);
                 var gridElement = $('<div class="pure-u-1 pure-u-md-'
                     + widget.width + '-' + silizium.widgets.widgetMaxWidth + '"></div>').appendTo(rowElement);
                 var widgetElement = $('<div class="grid-box"></div>').appendTo(gridElement);
-                if (typeof (widget.type) !== 'string' || silizium.widgets.widgetRegistry[widget.type] === undefined) {
-                    throw new Error("Invalid type attribute in widget config.");
-                }
                 new silizium.widgets.widgetRegistry[widget.type](socket, widgetElement, widget);
                 rowWidth += widget.width;
             }
@@ -177,10 +205,7 @@ var silizium;
                 if (Object.keys(_config.topics).length !== 1) {
                     throw new Error("TextWidget takes exactly one topic");
                 }
-                if (typeof (_config.label) !== "string") {
-                    console.log(_config);
-                    throw new Error("Invalid config for TextWidgetConfig");
-                }
+                silizium.jsonutils.expectProperty('label', 'string', _config);
                 _element.addClass('text-widget');
                 $('<div class="label">' + _config.label + '</div>').appendTo(_element);
                 this._value = $('<div class="value"></div>').appendTo(_element);

@@ -2,7 +2,9 @@
 /// <reference path="../definitions/jquery.d.ts" />
 
 /// <reference path="../siliziumsocket.ts"/>
+/// <reference path="../jsonutils.ts"/>
 /// <reference path="basewidget.ts"/>
+
 
 module silizium.widgets {
 
@@ -21,10 +23,7 @@ module silizium.widgets {
 				throw new Error("TextWidget takes exactly one topic");
 			}
 
-			if(typeof(_config.label) !== "string") {
-				console.log(_config);
-				throw new Error("Invalid config for TextWidgetConfig");
-			}
+			jsonutils.expectProperty('label', 'string', _config);
 
 			_element.addClass('text-widget');
 			$('<div class="label">' + _config.label + '</div>').appendTo(_element);

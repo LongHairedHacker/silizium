@@ -6,6 +6,7 @@
     "files": [
       "silizium.ts",
       "siliziumsocket.ts",
+      "jsonutils.ts",
       "formatters.ts",
       "widgets/basewidget.ts",
       "widgets/textwidget.ts"

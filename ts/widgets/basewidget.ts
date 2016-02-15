@@ -3,6 +3,7 @@
 
 
 /// <reference path="../siliziumsocket.ts"/>
+/// <reference path="../jsonutils.ts"/>
 /// <reference path="../formatters.ts"/>
 
 module silizium.widgets {
@@ -16,14 +17,10 @@ module silizium.widgets {
 	export abstract class BaseWidget {
 
 		constructor(protected _socket : Socket, protected _element : JQuery, protected _config : WidgetConfigBase) {
-			if(typeof(_config.type) !== "string" ||
-				!(_config.topics instanceof Object) ||
-				Object.keys(_config.topics).length < 1 ||
-				typeof(_config.width) !== "number") {
-
-				console.log(_config);
-				throw new Error("Invalid config format for WidgetConfigBase");
-			}
+			jsonutils.expectProperty('type', 'string', _config);
+			jsonutils.expectProperty('width', 'number', _config);
+			jsonutils.expectProperty('topics', 'object', _config);
+			jsonutils.expectMap('string', _config.topics);
 
 			_socket.onConnection(() => {
 				this._registerCallbacks();
