@@ -52,6 +52,16 @@ body {
 	z-index: 10;
 }
 
+#header {
+	border-bottom: 3px $primary_color solid;
+	margin: 6px;
+
+	.img-box {
+		text-align: right;
+		margin: 3px;
+	}
+}
+
 h1 {
 	font-family: 'px437_amstradpc1512regular';
 }
@@ -59,7 +69,6 @@ h1 {
 .grid-box {
 	@include fix_font(15px);
 	margin: 6px;
-	text-align: center;
 }
 
 #widget-container {

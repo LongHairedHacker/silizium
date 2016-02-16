@@ -21,14 +21,20 @@ body {
   top: 0;
   z-index: 10; }
 
+#header {
+  border-bottom: 3px #df8522 solid;
+  margin: 6px; }
+  #header .img-box {
+    text-align: right;
+    margin: 3px; }
+
 h1 {
   font-family: 'px437_amstradpc1512regular'; }
 
 .grid-box {
   font-family: 'px437_amstradpc1512regular';
   font-size: 15px;
-  margin: 6px;
-  text-align: center; }
+  margin: 6px; }
 
 #widget-container {
   margin: 6px; }
