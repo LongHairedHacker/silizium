@@ -49,9 +49,10 @@ module silizium {
 
 				var gridElement = $('<div class="pure-u-1 pure-u-md-'
 										+ widget.width + '-' + widgets.widgetMaxWidth + '"></div>').appendTo(rowElement);
-				var widgetElement = $('<div class="grid-box"></div>').appendTo(gridElement);
+				var widgetElement = $('<div class="widget"></div>').appendTo(gridElement);
+				var widgetContent = $('<div></div>').appendTo(widgetElement);
 
-				widgetInstances.push(new widgets.widgetRegistry[widget.type](socket, widgetElement, widget));
+				widgetInstances.push(new widgets.widgetRegistry[widget.type](socket, widgetContent, widget));
 
 				rowWidth += widget.width;
 			}

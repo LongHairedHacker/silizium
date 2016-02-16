@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 
-MQTT_BROKER = 'localhost'
+MQTT_BROKER = 'athena'
 MQTT_USER = ''
 MQTT_PASSWORD = ''
 

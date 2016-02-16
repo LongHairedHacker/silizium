@@ -1,8 +1,3 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var silizium;
 (function (silizium) {
     var jsonutils;
@@ -88,7 +83,7 @@ var silizium;
                 return silizium.formatters[formatterName](msg.value);
             };
             return BaseWidget;
-        }());
+        })();
         widgets.BaseWidget = BaseWidget;
         ;
         widgets.widgetRegistry = {};
@@ -151,7 +146,7 @@ var silizium;
             this._socket.emit('get_last_message', { topic: topic }, function (json) { return callback(json); });
         };
         return Socket;
-    }());
+    })();
     silizium.Socket = Socket;
 })(silizium || (silizium = {}));
 "use strict";
@@ -177,18 +172,19 @@ var silizium;
         widgetInstances = [];
         var widgetContainer = $('#widget-container');
         widgetContainer.empty();
-        for (var _i = 0, widgetConfig_1 = widgetConfig; _i < widgetConfig_1.length; _i++) {
-            var row = widgetConfig_1[_i];
+        for (var _i = 0; _i < widgetConfig.length; _i++) {
+            var row = widgetConfig[_i];
             var rowElement = $('<div class="pure-g"></div>').appendTo(widgetContainer);
             var rowWidth = 0;
-            for (var _a = 0, row_1 = row; _a < row_1.length; _a++) {
-                var widget = row_1[_a];
+            for (var _a = 0; _a < row.length; _a++) {
+                var widget = row[_a];
                 silizium.jsonutils.expectNumber('width', 1, silizium.widgets.widgetMaxWidth, widget);
                 silizium.jsonutils.expectProperty('type', 'string', widget);
                 var gridElement = $('<div class="pure-u-1 pure-u-md-'
                     + widget.width + '-' + silizium.widgets.widgetMaxWidth + '"></div>').appendTo(rowElement);
-                var widgetElement = $('<div class="grid-box"></div>').appendTo(gridElement);
-                widgetInstances.push(new silizium.widgets.widgetRegistry[widget.type](socket, widgetElement, widget));
+                var widgetElement = $('<div class="widget"></div>').appendTo(gridElement);
+                var widgetContent = $('<div></div>').appendTo(widgetElement);
+                widgetInstances.push(new silizium.widgets.widgetRegistry[widget.type](socket, widgetContent, widget));
                 rowWidth += widget.width;
             }
             var rest = silizium.widgets.widgetMaxWidth - rowWidth;
@@ -196,6 +192,11 @@ var silizium;
         }
     }
 })(silizium || (silizium = {}));
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var silizium;
 (function (silizium) {
     var widgets;
@@ -219,7 +220,7 @@ var silizium;
                 this._value.text(this._format(msg));
             };
             return TextWidget;
-        }(widgets.BaseWidget));
+        })(widgets.BaseWidget);
         widgets.TextWidget = TextWidget;
         widgets.widgetRegistry['text-widget'] = TextWidget;
     })(widgets = silizium.widgets || (silizium.widgets = {}));

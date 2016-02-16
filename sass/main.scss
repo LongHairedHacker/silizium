@@ -58,13 +58,26 @@ h1 {
 
 .grid-box {
 	@include fix_font(15px);
-
 	margin: 6px;
 	text-align: center;
 }
 
 #widget-container {
 	margin: 6px;
+}
+
+.widget {
+	@include fix_font(15px);
+	margin: 6px;
+	text-align: center;
+
+	overflow:hidden;
+
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	height: 180px;
 }
 
 .text-widget {
