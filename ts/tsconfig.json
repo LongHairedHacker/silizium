@@ -1,15 +1,29 @@
 {
-    "compilerOptions": {
-      "out": "../static/js/silizium.js",
-      "target": "es5"
-    },
-    "files": [
-      "silizium.ts",
-      "siliziumsocket.ts",
-      "jsonutils.ts",
-      "formatters.ts",
-      "widgets/basewidget.ts",
-      "widgets/textwidget.ts",
-      "widgets/gagewidget.ts"
-    ]
+  "compilerOptions": {
+    "outDir": "../js/",
+    "target": "es5",
+    "module": "commonjs"
+  },
+  "filesGlob": [
+    "**/*.ts"
+  ],
+  "files": [
+    "definitions/es6-shim.d.ts",
+    "definitions/jquery.d.ts",
+    "definitions/socket.io-client.d.ts",
+    "formatters.ts",
+    "jsonutils.ts",
+    "silizium.ts",
+    "siliziumsocket.ts",
+    "widgets/basewidget.ts",
+    "widgets/gagewidget.ts",
+    "widgets/registry.ts",
+    "widgets/textwidget.ts"
+  ],
+  "scripts": {
+    "postbuild": "browserify -o static/js/silizium.js js/silizium.js"
+  },
+  "atom": {
+    "rewriteTsconfig": true
+  }
 }

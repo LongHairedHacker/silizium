@@ -1,41 +1,33 @@
-/// <reference path="../definitions/es6-shim.d.ts"/>
-/// <reference path="../definitions/jquery.d.ts" />
-
-/// <reference path="../siliziumsocket.ts"/>
-/// <reference path="../jsonutils.ts"/>
-/// <reference path="basewidget.ts"/>
+import * as jsonutils from '../jsonutils';
+import {Socket, MQTTMessage} from '../siliziumsocket';
+import {WidgetConfigBase, BaseWidget} from './basewidget';
 
 
-module silizium.widgets {
+export interface TextWidgetConfig extends WidgetConfigBase {
+	label : string;
+}
 
-	export interface TextWidgetConfig extends WidgetConfigBase {
-		label : string;
-	}
+export default class TextWidget extends BaseWidget {
 
-	export class TextWidget extends BaseWidget {
+	protected _value : JQuery;
 
-		protected _value : JQuery;
+	constructor(_socket : Socket, _element : JQuery, protected _config : TextWidgetConfig) {
+		super(_socket, _element, _config);
 
-		constructor(_socket : Socket, _element : JQuery, protected _config : TextWidgetConfig) {
-			super(_socket, _element, _config);
-
-			if(Object.keys(_config.topics).length !== 1) {
-				throw new Error("TextWidget takes exactly one topic");
-			}
-
-			jsonutils.expectProperty('label', 'string', _config);
-
-			_element.addClass('text-widget');
-			$('<div class="label">' + _config.label + '</div>').appendTo(_element);
-			this._value = $('<div class="value"></div>').appendTo(_element);
-
-			_socket.getLastMessage(Object.keys(_config.topics)[0], (msg) => this._onMQTTMessage(msg));
+		if(Object.keys(_config.topics).length !== 1) {
+			throw new Error("TextWidget takes exactly one topic");
 		}
 
-		protected _onMQTTMessage(msg : MQTTMessage) {
-			this._value.text(this._format(msg));
-		}
+		jsonutils.expectProperty('label', 'string', _config);
+
+		_element.addClass('text-widget');
+		$('<div class="label">' + _config.label + '</div>').appendTo(_element);
+		this._value = $('<div class="value"></div>').appendTo(_element);
+
+		_socket.getLastMessage(Object.keys(_config.topics)[0], (msg) => this._onMQTTMessage(msg));
 	}
 
-	widgetRegistry['text-widget'] = TextWidget;
+	protected _onMQTTMessage(msg : MQTTMessage) {
+		this._value.text(this._format(msg));
+	}
 }
