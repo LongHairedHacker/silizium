@@ -65,4 +65,4 @@ if __name__ == '__main__':
 	if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
 		setup()
 
-	socketio.run(app, debug=True)
+	socketio.run(app, debug=True, host='0.0.0.0')

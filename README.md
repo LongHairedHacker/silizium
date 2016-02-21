@@ -19,4 +19,3 @@ Licenses
 * [jquery](https://jquery.com/) [BSD License](static/js/jquery/LICENSE)
 * [justgage](http://justgage.com/) [MIT License](static/js/justgage/LICENSE)
 * [es6-shim](https://github.com/paulmillr/es6-shim) [MIT License](static/js/es6-shim/LICENSE.md)
-* [pure](http://purecss.io/) [BSD License](static/css/pure/LICENSE.md)

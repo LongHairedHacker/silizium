@@ -1,6 +1,6 @@
 body {
   font-family: 'px437_amstradpc1512regular';
-  font-size: 15px;
+  font-size: 16px;
   color: #df8522;
   background-color: #000000;
   text-shadow: 0px 0px 2px #df8522; }
@@ -21,38 +21,41 @@ body {
   top: 0;
   z-index: 10; }
 
-#header {
+.header {
   border-bottom: 3px #df8522 solid;
-  margin: 6px; }
-  #header .img-box {
-    text-align: right;
-    margin: 3px; }
-
-h1 {
-  font-family: 'px437_amstradpc1512regular'; }
-
-.grid-box {
-  font-family: 'px437_amstradpc1512regular';
-  font-size: 15px;
-  margin: 6px; }
-
-#widget-container {
-  margin: 6px; }
-
-.widget {
-  font-family: 'px437_amstradpc1512regular';
-  font-size: 15px;
-  margin: 6px;
-  text-align: center;
-  overflow: hidden;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 180px; }
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center; }
+  .header .header-element {
+    padding-right: 20px;
+    padding-left: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px; }
+  .header .banner h1 {
+    font-family: 'px437_amstradpc1512regular'; }
+  @media screen and (max-width: 500px) {
+    .header {
+      justify-content: center; }
+      .header .logo {
+        display: none; } }
+  @media screen and (max-width: 720px) {
+    .header .banner h1 {
+      font-size: 17px; } }
 
-.text-widget .value {
-  margin-top: 6px;
-  font-size: 20px; }
-
-.gage-widget {
-  height: 200px; }
+.widget-container .row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center; }
+  .widget-container .row .widget {
+    margin: 10px; }
+  .widget-container .row .text-widget {
+    text-align: center; }
+    .widget-container .row .text-widget .value {
+      margin-top: 10px;
+      font-size: 22px; }
+  .widget-container .row .gage-widget {
+    height: 200px; }

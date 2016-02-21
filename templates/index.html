@@ -1,8 +1,8 @@
 <html>
 	<head>
 		<title>Test</title>
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/pure/pure-min.css') }}" />
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/pure/grids-responsive-min.css') }}" />
+		<!-- link rel="stylesheet" href="{{ url_for('static', filename='css/pure/pure-min.css') }}" /-->
+		<!-- link rel="stylesheet" href="{{ url_for('static', filename='css/pure/grids-responsive-min.css') }}" /-->
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/font/amstradpc1512.css') }}" />
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
 
@@ -15,33 +15,22 @@
 	<body>
 		<div class="overlay"></div>
 
-		<div id="header">
-			<div class="pure-g">
-				<div class="pure-u-1 pure-u-md-1-2">
-					<div class="grid-box">
-						<h1>S.I.L/I.Z.I.U.M.</h1>
-					</div>
-				</div>
+		<div class="header">
+			<div class="banner header-element">
+				<h1>S.I.L/I.Z.I.U.M.</h1>
+			</div>
 
-				<div class="pure-u-1 pure-u-md-1-2">
-					<div class="img-box">
-						<img src="{{ url_for('static', filename='c3kl_knoten.png') }}"/>
-					</div>
-				</div>
+			<div class="logo header-element">
+				<img src="{{ url_for('static', filename='c3kl_knoten.png') }}"/>
 			</div>
 		</div>
 
-		<div id="widget-container">
+		<br/>
+
+		<div class="widget-container">
 
 		</div>
 
-
-		<div class="log">
-			<p>No messages yet ...</p>
-		</div>
-
-
-
-	<script type="text/javascript" src="{{ url_for('static', filename='js/silizium.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='js/silizium.js') }}"></script>
 	</body>
 </html>

@@ -46,49 +46,29 @@ exports.expectMap = expectMap;
 "use strict";
 var siliziumsocket = require('./siliziumsocket');
 var jsonutils = require('./jsonutils');
-var widgets = require('./widgets/basewidget');
 var registry_1 = require('./widgets/registry');
 var widgetInstances = [];
-function addMessage(msg) {
-    var date = new Date(msg.time);
-    var dateStr = date.toLocaleDateString();
-    var timeStr = date.toLocaleTimeString();
-    $('.log p:first').before('<p>[' + msg.time + ' ' + dateStr + ' ' + timeStr + '] - '
-        + msg.topic + ' - ' + msg.value.toFixed(2) + ' </p>');
-}
 var socket = new siliziumsocket.Socket('http://' + document.domain + ':' + location.port);
 socket.onConnection(function () {
-    socket.getHistory('/esp/temp/0', 10 * 60, function (history) {
-        history.forEach(addMessage);
-        socket.onMQTTMessage('/esp/temp/0', addMessage);
-    });
     socket.getWidgets(setupWidgets);
 });
 function setupWidgets(widgetConfig) {
     widgetInstances = [];
-    var widgetContainer = $('#widget-container');
+    var widgetContainer = $('.widget-container');
     widgetContainer.empty();
     for (var _i = 0, widgetConfig_1 = widgetConfig; _i < widgetConfig_1.length; _i++) {
         var row = widgetConfig_1[_i];
-        var rowElement = $('<div class="pure-g"></div>').appendTo(widgetContainer);
-        var rowWidth = 0;
+        var rowElement = $('<div class="row"></div>').appendTo(widgetContainer);
         for (var _a = 0, row_1 = row; _a < row_1.length; _a++) {
             var widget = row_1[_a];
-            jsonutils.expectNumber('width', 1, widgets.widgetMaxWidth, widget);
             jsonutils.expectProperty('type', 'string', widget);
-            var gridElement = $('<div class="pure-u-1 pure-u-md-'
-                + widget.width + '-' + widgets.widgetMaxWidth + '"></div>').appendTo(rowElement);
-            var widgetElement = $('<div class="widget"></div>').appendTo(gridElement);
-            var widgetContent = $('<div></div>').appendTo(widgetElement);
-            widgetInstances.push(new (registry_1.default(widget.type))(socket, widgetContent, widget));
-            rowWidth += widget.width;
+            var widgetElement = $('<div class="widget"></div>').appendTo(rowElement);
+            widgetInstances.push(new (registry_1.default(widget.type))(socket, widgetElement, widget));
         }
-        var rest = widgets.widgetMaxWidth - rowWidth;
-        rowElement.append('<div class="pure-u-1 pure-u-md-' + rest + '-' + widgets.widgetMaxWidth + '"></div>');
     }
 }
 
-},{"./jsonutils":2,"./siliziumsocket":4,"./widgets/basewidget":5,"./widgets/registry":7}],4:[function(require,module,exports){
+},{"./jsonutils":2,"./siliziumsocket":4,"./widgets/registry":7}],4:[function(require,module,exports){
 "use strict";
 var Socket = (function () {
     function Socket(url) {
@@ -158,7 +138,6 @@ var BaseWidget = (function () {
         this._element = _element;
         this._config = _config;
         jsonutils.expectProperty('type', 'string', _config);
-        jsonutils.expectProperty('width', 'number', _config);
         jsonutils.expectProperty('topics', 'object', _config);
         jsonutils.expectMap('string', _config.topics);
         _socket.onConnection(function () {

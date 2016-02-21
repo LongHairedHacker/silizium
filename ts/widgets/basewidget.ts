@@ -5,14 +5,12 @@ import {formatters} from '../formatters';
 export interface WidgetConfigBase {
 	type: string;
 	topics : {[topic: string] : string};
-	width : number;
 }
 
 export abstract class BaseWidget {
 
 	constructor(protected _socket : Socket, protected _element : JQuery, protected _config : WidgetConfigBase) {
 		jsonutils.expectProperty('type', 'string', _config);
-		jsonutils.expectProperty('width', 'number', _config);
 		jsonutils.expectProperty('topics', 'object', _config);
 		jsonutils.expectMap('string', _config.topics);
 

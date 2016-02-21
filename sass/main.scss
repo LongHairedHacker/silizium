@@ -3,16 +3,11 @@ $primary_color: #df8522;
 
 $scan_line_width : 1px;
 
-
-@mixin fix_font($size) {
+body {
 	font: {
 		family: 'px437_amstradpc1512regular';
-		size: $size;
+		size: 16px;
 	}
-}
-
-body {
-	@include fix_font(15px);
 
 	color: $primary_color;
 	background-color: $background_color;
@@ -52,50 +47,70 @@ body {
 	z-index: 10;
 }
 
-#header {
+.header {
 	border-bottom: 3px $primary_color solid;
-	margin: 6px;
-
-	.img-box {
-		text-align: right;
-		margin: 3px;
-	}
-}
-
-h1 {
-	font-family: 'px437_amstradpc1512regular';
-}
-
-.grid-box {
-	@include fix_font(15px);
-	margin: 6px;
-}
-
-#widget-container {
-	margin: 6px;
-}
-
-.widget {
-	@include fix_font(15px);
-	margin: 6px;
-	text-align: center;
-
-	overflow:hidden;
-
-
 	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	height: 180px;
-}
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
 
-.text-widget {
-	.value {
-		margin-top : 6px;
-		font-size: 20px;
+	.header-element {
+		padding: {
+				right: 20px;
+				left: 20px;
+				top: 5px;
+				bottom: 5px;
+		}
+	}
+
+	.banner {
+		h1 {
+			font-family: 'px437_amstradpc1512regular';
+		}
+	}
+
+	@media screen and (max-width: 500px) {
+		.logo {
+			display: none;
+		}
+		justify-content: center;
+	}
+
+	@media screen and (max-width: 720px) {
+		.banner {
+			h1 {
+				font-size: 17px;
+			}
+		}
 	}
 }
 
-.gage-widget {
-	height: 200px;
+.widget-container {
+
+	.row {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: space-around;
+		align-items: center;
+
+		.widget {
+			margin: 10px;
+		}
+
+		.text-widget {
+			text-align: center;
+
+			.value {
+				margin-top: 10px;
+				font-size: 22px;
+			}
+
+		}
+
+		.gage-widget {
+			height: 200px;
+		}
+	}
 }
