@@ -40,7 +40,7 @@ body {
 	bottom: 0;
 	content: '';
 	left: 0;
-	position: absolute;
+	position: fixed;
 	right: 0;
 	top: 0;
 
@@ -81,6 +81,15 @@ body {
 		.banner {
 			h1 {
 				font-size: 17px;
+			}
+		}
+		
+		.header-element {
+			padding: {
+					right: 5px;
+					left: 5px;
+					top: 5px;
+					bottom: 5px;
 			}
 		}
 	}
