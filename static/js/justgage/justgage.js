@@ -400,12 +400,14 @@ JustGage = function(config) {
     }
 
     // title
-    titleFontSize = ((widgetH / 8) > obj.config.titleMinFontSize) ? (widgetH / 11) : obj.config.titleMinFontSize;
+    //titleFontSize = ((widgetH / 8) > obj.config.titleMinFontSize) ? (widgetH / 11) : obj.config.titleMinFontSize;
+    titleFontSize = widgetH / 11;
     titleX = dx + widgetW / 2;
     titleY = dy + (obj.config.titlePosition === 'below' ? (widgetH * 1.07) : (widgetH / 6.4));
 
     // value
-    valueFontSize = ((widgetH / 6.5) > obj.config.valueMinFontSize) ? (widgetH / 8) : obj.config.valueMinFontSize;
+    //valueFontSize = ((widgetH / 6.5) > obj.config.valueMinFontSize) ? (widgetH / 6.5) : obj.config.valueMinFontSize;
+    valueFontSize = widgetH / 12;
     valueX = dx + widgetW / 2;
     valueY = dy + widgetH / 1.275;
 

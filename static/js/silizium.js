@@ -177,6 +177,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var jsonutils = require('../jsonutils');
 var basewidget_1 = require('./basewidget');
+var formatters_1 = require('../formatters');
 ;
 var GageWidget = (function (_super) {
     __extends(GageWidget, _super);
@@ -190,6 +191,7 @@ var GageWidget = (function (_super) {
         jsonutils.expectProperty('label', 'string', _config);
         jsonutils.expectProperty('min', 'number', _config);
         jsonutils.expectProperty('min', 'number', _config);
+        var topic = Object.keys(_config.topics)[0];
         _element.addClass('gage-widget');
         this._gage = new JustGage({
             parentNode: _element.get(0),
@@ -204,9 +206,10 @@ var GageWidget = (function (_super) {
             titleFontColor: "#df8522",
             titleFontFamily: "px437_amstradpc1512regular",
             valueFontColor: "#df8522",
-            valueFontFamily: "px437_amstradpc1512regular"
+            valueFontFamily: "px437_amstradpc1512regular",
+            textRenderer: formatters_1.formatters[_config.topics[topic]]
         });
-        _socket.getLastMessage(Object.keys(_config.topics)[0], function (msg) { return _this._onMQTTMessage(msg); });
+        _socket.getLastMessage(topic, function (msg) { return _this._onMQTTMessage(msg); });
     }
     GageWidget.prototype._onMQTTMessage = function (msg) {
         this._gage.refresh(msg.value);
@@ -216,7 +219,7 @@ var GageWidget = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = GageWidget;
 
-},{"../jsonutils":2,"./basewidget":5}],7:[function(require,module,exports){
+},{"../formatters":1,"../jsonutils":2,"./basewidget":5}],7:[function(require,module,exports){
 "use strict";
 var textwidget_1 = require('./textwidget');
 var gagewidget_1 = require('./gagewidget');

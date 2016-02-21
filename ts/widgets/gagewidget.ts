@@ -1,6 +1,7 @@
 import * as jsonutils from '../jsonutils';
 import {Socket, MQTTMessage} from '../siliziumsocket';
 import {WidgetConfigBase, BaseWidget} from './basewidget';
+import {formatters} from '../formatters';
 
 interface GageWidgetConfig extends WidgetConfigBase {
 	label: string,
@@ -29,6 +30,8 @@ export default class GageWidget extends BaseWidget {
 		jsonutils.expectProperty('min', 'number', _config);
 		jsonutils.expectProperty('min', 'number', _config);
 
+		var topic = Object.keys(_config.topics)[0];
+
 		_element.addClass('gage-widget');
 
 		this._gage = new JustGage({
@@ -44,10 +47,11 @@ export default class GageWidget extends BaseWidget {
 			titleFontColor: "#df8522",
 			titleFontFamily: "px437_amstradpc1512regular",
 			valueFontColor: "#df8522",
-			valueFontFamily: "px437_amstradpc1512regular"
+			valueFontFamily: "px437_amstradpc1512regular",
+			textRenderer: formatters[_config.topics[topic]]
 		});
 
-		_socket.getLastMessage(Object.keys(_config.topics)[0], (msg) => this._onMQTTMessage(msg));
+		_socket.getLastMessage(topic, (msg) => this._onMQTTMessage(msg));
 	}
 
 	protected _onMQTTMessage(msg : MQTTMessage) {
