@@ -1,0 +1,4 @@
+#!/bin/bash
+unset NODE_ENV
+unset NODE_PATH
+browserify -o ../static/js/silizium.js ../js/silizium.js

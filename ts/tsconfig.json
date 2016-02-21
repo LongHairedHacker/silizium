@@ -21,7 +21,7 @@
     "widgets/textwidget.ts"
   ],
   "scripts": {
-    "postbuild": "browserify -o static/js/silizium.js js/silizium.js"
+    "postbuild": "bash postbuild"
   },
   "atom": {
     "rewriteTsconfig": true
