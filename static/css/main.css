@@ -64,3 +64,16 @@ body {
       font-size: 22px; }
   .widget-container .row .gage-widget {
     height: 200px; }
+  .widget-container .row .graph-widget .graph {
+    height: 200px;
+    width: 500px; }
+    @media screen and (max-width: 500px) {
+      .widget-container .row .graph-widget .graph {
+        width: 100%; } }
+  .widget-container .row .graph-widget .legend {
+    text-shadow: 0px 0px 2px #54320d; }
+  .widget-container .row .graph-widget .flotr-grid-label {
+    color: #df8522; }
+  .widget-container .row .graph-widget .flotr-title {
+    font-size: 16px !important;
+    font-weight: normal !important; }

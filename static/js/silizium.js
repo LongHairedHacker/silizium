@@ -68,7 +68,7 @@ function setupWidgets(widgetConfig) {
     }
 }
 
-},{"./jsonutils":2,"./siliziumsocket":4,"./widgets/registry":7}],4:[function(require,module,exports){
+},{"./jsonutils":2,"./siliziumsocket":4,"./widgets/registry":8}],4:[function(require,module,exports){
 "use strict";
 var Socket = (function () {
     function Socket(url) {
@@ -221,12 +221,111 @@ exports.default = GageWidget;
 
 },{"../formatters":1,"../jsonutils":2,"./basewidget":5}],7:[function(require,module,exports){
 "use strict";
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var jsonutils = require('../jsonutils');
+var basewidget_1 = require('./basewidget');
+var Colors = ['#ff9827', '#a8641a', '#54320d'];
+var GraphWidget = (function (_super) {
+    __extends(GraphWidget, _super);
+    function GraphWidget(_socket, _element, _config) {
+        var _this = this;
+        _super.call(this, _socket, _element, _config);
+        this._config = _config;
+        if (Object.keys(_config.topics).length > 3) {
+            throw new Error("GageWidget takes at most 3 topics");
+        }
+        jsonutils.expectProperty('label', 'string', _config);
+        jsonutils.expectProperty('secondsBack', 'number', _config);
+        _element.addClass('graph-widget');
+        this._graphElement = $('<div class="graph"></div>').appendTo(_element);
+        $('<br/>').appendTo(_element);
+        this._legendElement = $('<div class="legend"></div>').appendTo(_element);
+        this._topics = Object.keys(_config.topics);
+        this._data = [];
+        var index = 0;
+        for (var _i = 0, _a = this._topics; _i < _a.length; _i++) {
+            var topic = _a[_i];
+            $('<div style="color : ' + Colors[index] + ';">&#x25a0; ' + topic + '</div>').appendTo(_element);
+            index++;
+            var series = [];
+            this._data.push(series);
+            _socket.getHistory(topic, _config.secondsBack, function (msgs) {
+                for (var _i = 0, msgs_1 = msgs; _i < msgs_1.length; _i++) {
+                    var _a = msgs_1[_i], time = _a.time, value = _a.value;
+                    series.push([time, value]);
+                    _this._updateRange(value);
+                }
+                _this._redrawGraph();
+            });
+        }
+    }
+    GraphWidget.prototype._redrawGraph = function () {
+        var _this = this;
+        window.clearTimeout(this._timeout);
+        var now = (new Date()).getTime();
+        var backThen = now - this._config.secondsBack * 1000;
+        var graph = Flotr.draw(this._graphElement.get()[0], this._data, {
+            title: this._config.label,
+            colors: Colors,
+            xaxis: {
+                mode: 'time',
+                timeMode: 'local',
+                min: backThen,
+                max: now
+            },
+            yaxis: {
+                min: this._min - 0.5,
+                max: this._max + 0.5,
+            },
+            grid: {
+                outlineWidth: 2,
+                labelMargin: 6,
+                color: '#42270a',
+                tickColor: '#42270a'
+            },
+        });
+        var delay = (now - backThen) / graph.plotWidth;
+        this._timeout = window.setTimeout(function () { return _this._redrawGraph(); }, delay);
+        console.log(this._min - 0.5, this._max + 0.5);
+    };
+    GraphWidget.prototype._updateRange = function (value) {
+        if (this._min === undefined) {
+            this._min = value;
+        }
+        if (this._max === undefined) {
+            this._max = value;
+        }
+        this._max = Math.max(value, this._max);
+        this._min = Math.min(value, this._min);
+    };
+    GraphWidget.prototype._onMQTTMessage = function (msg) {
+        var index = this._topics.indexOf(msg.topic);
+        this._data[index].push([msg.time, msg.value]);
+        this._updateRange(msg.value);
+        var now = (new Date()).getTime();
+        var backThen = now - this._config.secondsBack * 1000;
+        this._data[index] = this._data[index].filter(function (point) { return point[0] >= backThen && point[0] <= now; });
+        this._redrawGraph();
+    };
+    return GraphWidget;
+}(basewidget_1.BaseWidget));
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = GraphWidget;
+
+},{"../jsonutils":2,"./basewidget":5}],8:[function(require,module,exports){
+"use strict";
 var textwidget_1 = require('./textwidget');
 var gagewidget_1 = require('./gagewidget');
+var graphwidget_1 = require('./graphwidget');
 ;
 var widgetRegistry = {
     'text-widget': textwidget_1.default,
-    'gage-widget': gagewidget_1.default
+    'gage-widget': gagewidget_1.default,
+    'graph-widget': graphwidget_1.default
 };
 function getWidget(name) {
     if (widgetRegistry[name] === undefined) {
@@ -237,7 +336,7 @@ function getWidget(name) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = getWidget;
 
-},{"./gagewidget":6,"./textwidget":8}],8:[function(require,module,exports){
+},{"./gagewidget":6,"./graphwidget":7,"./textwidget":9}],9:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];

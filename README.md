@@ -18,5 +18,6 @@ Licenses
 * [Socket.io](http://socket.io/) [MIT License](static/js/socketio/LICENSE)
 * [jquery](https://jquery.com/) [BSD License](static/js/jquery/LICENSE)
 * [justgage](http://justgage.com/) [MIT License](static/js/justgage/LICENSE)
+* [flotr2](http://www.humblesoftware.com/flotr2/) [MIT License](static/js/flort2/LICENSE)
 * [es6-shim](https://github.com/paulmillr/es6-shim) [MIT License](static/js/es6-shim/LICENSE.md)
 * [normalize.css](https://necolas.github.io/normalize.css/) [MIT License](static/css/normalize/LICENSE.md)

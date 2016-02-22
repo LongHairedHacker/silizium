@@ -121,5 +121,33 @@ body {
 		.gage-widget {
 			height: 200px;
 		}
+
+		.graph-widget {
+			.graph {
+				height: 200px;
+				width: 500px;
+
+				@media screen and (max-width: 500px) {
+					width: 100%;
+				}
+			}
+
+			.legend {
+				text-shadow: 0px 0px 2px #54320d;
+			}
+
+			.flotr-grid-label {
+				color: $primary_color;
+			}
+
+			.flotr-title {
+				font-size: 16px !important;
+				font-weight: normal !important;
+			}
+
+
+		}
+
+
 	}
 }

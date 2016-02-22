@@ -17,6 +17,7 @@
     "siliziumsocket.ts",
     "widgets/basewidget.ts",
     "widgets/gagewidget.ts",
+    "widgets/graphwidget.ts",
     "widgets/registry.ts",
     "widgets/textwidget.ts"
   ],

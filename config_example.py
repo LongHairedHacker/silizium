@@ -27,8 +27,14 @@ GAGE_ROOMTEMP = {
 	'max' : 40.0
 }
 
-
+GRAPH_ROOMTEMP = {
+	'type': 'graph-widget',
+	'topics' : {'/esp/temp/0': ''},
+	'label' : 'Another\nTemperature',
+	'secondsBack' : 24 * 60 * 60
+}
 
 WIDGETS = [
-	[TEXT_ROOMTEMP, GAGE_ROOMTEMP, TEXT_ROOMTEMP, GAGE_ROOMTEMP],
+	[TEXT_ROOMTEMP, GAGE_ROOMTEMP],
+	[GRAPH_ROOMTEMP]
 ]
