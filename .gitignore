@@ -1,3 +1,5 @@
 virtenv
+config.py
+
 *.pyc
 /js
