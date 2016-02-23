@@ -19,48 +19,78 @@ class MQTTRunner(object):
             client.subscribe(topic)
 
 
-    def _on_message(self, client, userdata, msg):
-        print "[Debug] %s\t%s" % (msg.topic, msg.payload)
-
-        data = mqtt_parse_message(MQTT_TOPICS[msg.topic], msg.topic, msg.payload)
-        if data != None:
-            timestamp = js_timestamp(data['time'])
-            self._socketio.emit("mqtt_message", {'topic' : msg.topic, 'time': timestamp, 'value': data['value']})
-
-            self._dbmanager.insert_message(data['time'], msg.topic, data['value'])
-
-
-    def _run(self):
-        while not self._thread_stop:
-            self._client.loop()
-
-
     def _teardown(self):
-        if self._thread != None:
-            self._thread_stop = True
-            self._thread.join()
-
+        print "[Debug] tearing down"
         if self._client != None:
             self._client.disconnect()
+            self._client.loop_stop()
 
 
-    def start(self):
+    def start(self, threadded = True):
         self._client = mqtt.Client()
         self._client.on_connect = self._on_connect
         self._client.on_message = self._on_message
 
         self._client.connect(MQTT_BROKER)
 
-        self._thread = threading.Thread(target=self._run)
-        self._thread_stop = False
-        self._thread.start()
+        if threadded:
+            atexit.register(self._teardown)
+            self._client.loop_start()
+        else:
+            self._client.loop_forever()
 
 
-    def __init__(self, socketio, dbmanager):
-        self._socketio = socketio
-        self._dbmanager = dbmanager
+
+
+    def __init__(self):
 
         self._thread = None
         self._client = None
 
-        atexit.register(self._teardown)
+
+
+
+
+class MQTTSocketIORunner(MQTTRunner):
+
+    def _on_message(self, client, userdata, msg):
+        #print "[Debug] %s\t%s" % (msg.topic, msg.payload)
+
+        if msg.topic in MQTT_TOPICS.keys():
+            data = mqtt_parse_message(MQTT_TOPICS[msg.topic], msg.topic, msg.payload)
+            if data != None:
+                timestamp = js_timestamp(data['time'])
+                self._socketio.emit("mqtt_message", {'topic' : msg.topic, 'time': timestamp, 'value': data['value']})
+
+    def _run(self):
+        print "[Debug] running socketio runner"
+        while not self._thread_stop:
+            self._client.loop()
+
+
+    def __init__(self, socketio):
+        super(MQTTSocketIORunner, self).__init__()
+        self._socketio = socketio
+
+
+
+class MQTTDatabaseRunner(MQTTRunner):
+
+    def _on_message(self, client, userdata, msg):
+        #print "[Debug] %s\t%s" % (msg.topic, msg.payload)
+
+        if msg.topic in MQTT_TOPICS.keys():
+            data = mqtt_parse_message(MQTT_TOPICS[msg.topic], msg.topic, msg.payload)
+            if data != None:
+                self._dbmanager.insert_message(data['time'], msg.topic, data['value'])
+
+
+    def _run(self):
+        print "[Debug] running database runner"
+        while not self._thread_stop:
+            self._client.loop()
+
+
+    def __init__(self, dbmanager):
+        super(MQTTDatabaseRunner, self).__init__()
+        self._dbmanager = dbmanager

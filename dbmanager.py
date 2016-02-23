@@ -63,4 +63,9 @@ class DBManager(object):
 		cur.execute("EXECUTE get_last_message (%s)", (topic,))
 		data = cur.fetchone()
 
-		return self._result_to_dict(data)
+		if data == None:
+			data = {'topic' : topic, 'time' : now(), 'value' : 0.0}
+		else:
+			data = self._result_to_dict(data)
+
+		return data

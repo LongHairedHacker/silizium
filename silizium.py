@@ -11,7 +11,7 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO
 
 from dbmanager import DBManager
-from mqtt import MQTTRunner
+from mqtt import MQTTSocketIORunner, MQTTDatabaseRunner
 from timeutils import js_timestamp
 
 from config import DB_CONNECTION_STRING, WIDGETS
@@ -21,7 +21,6 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'omg_so_secret!'
 socketio = SocketIO(app)
 db_manager = DBManager(DB_CONNECTION_STRING)
-runner = MQTTRunner(socketio, db_manager)
 
 
 @app.route('/')
@@ -40,8 +39,7 @@ def handle_get_history(json):
 
 
 @socketio.on('get_last_message')
-def handle_get_history(json):
-	print json
+def handle_get_last_message(json):
 	if not 'topic' in json.keys():
 		return {'error': 'Invalid request'}
 
@@ -55,14 +53,17 @@ def handle_get_history(json):
 	return WIDGETS
 
 
-def setup():
+@app.before_first_request
+def setup_socket_runner():
 	db_manager.connect()
-	runner.start()
+
+	socket_runner = MQTTSocketIORunner(socketio)
+	socket_runner.start()
+
+	if app.config['DEBUG']:
+		db_runner = MQTTDatabaseRunner(db_manager)
+		db_runner.start()
 
 
 if __name__ == '__main__':
-
-	if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
-		setup()
-
-	socketio.run(app, debug=True, host='0.0.0.0')
+	socketio.run(app, debug=True)
