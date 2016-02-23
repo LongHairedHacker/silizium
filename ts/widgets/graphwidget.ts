@@ -51,8 +51,9 @@ export default class GraphWidget extends BaseWidget {
 			this._data.push(series);
 
 			_socket.getHistory(topic, _config.secondsBack, (msgs : MQTTMessage[]) => {
-				for(var {time, value} of msgs) {
-					series.push([time, value]);
+				for(var {topic, time, value} of msgs) {
+					var index = this._topics.indexOf(topic);
+					this._data[index].push([time, value]);
 
 					this._updateRange(value);
 				}
@@ -67,6 +68,8 @@ export default class GraphWidget extends BaseWidget {
 		var now = (new Date()).getTime();
 		var backThen = now - this._config.secondsBack * 1000;
 
+		var delta = (this._max - this._min) * 0.1;
+
 		var graph = Flotr.draw(this._graphElement.get()[0], this._data, {
 			title: this._config.label,
 			colors: Colors,
@@ -77,8 +80,8 @@ export default class GraphWidget extends BaseWidget {
 				max : now
 			},
 			yaxis: {
-				min : this._min - 0.5,
-				max : this._max + 0.5,
+				min : this._min - delta,
+				max : this._max + delta,
 			},
 			grid: {
 				outlineWidth: 2,
@@ -90,8 +93,6 @@ export default class GraphWidget extends BaseWidget {
 
 		var delay = (now - backThen) / graph.plotWidth;
 		this._timeout = window.setTimeout(() => this._redrawGraph(), delay);
-
-		console.log(this._min - 0.5, this._max + 0.5);
 	}
 
 	private _updateRange(value : number) {

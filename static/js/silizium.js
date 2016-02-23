@@ -255,8 +255,9 @@ var GraphWidget = (function (_super) {
             this._data.push(series);
             _socket.getHistory(topic, _config.secondsBack, function (msgs) {
                 for (var _i = 0, msgs_1 = msgs; _i < msgs_1.length; _i++) {
-                    var _a = msgs_1[_i], time = _a.time, value = _a.value;
-                    series.push([time, value]);
+                    var _a = msgs_1[_i], topic = _a.topic, time = _a.time, value = _a.value;
+                    var index = _this._topics.indexOf(topic);
+                    _this._data[index].push([time, value]);
                     _this._updateRange(value);
                 }
                 _this._redrawGraph();
@@ -268,6 +269,7 @@ var GraphWidget = (function (_super) {
         window.clearTimeout(this._timeout);
         var now = (new Date()).getTime();
         var backThen = now - this._config.secondsBack * 1000;
+        var delta = (this._max - this._min) * 0.1;
         var graph = Flotr.draw(this._graphElement.get()[0], this._data, {
             title: this._config.label,
             colors: Colors,
@@ -278,8 +280,8 @@ var GraphWidget = (function (_super) {
                 max: now
             },
             yaxis: {
-                min: this._min - 0.5,
-                max: this._max + 0.5,
+                min: this._min - delta,
+                max: this._max + delta,
             },
             grid: {
                 outlineWidth: 2,
@@ -290,7 +292,6 @@ var GraphWidget = (function (_super) {
         });
         var delay = (now - backThen) / graph.plotWidth;
         this._timeout = window.setTimeout(function () { return _this._redrawGraph(); }, delay);
-        console.log(this._min - 0.5, this._max + 0.5);
     };
     GraphWidget.prototype._updateRange = function (value) {
         if (this._min === undefined) {
