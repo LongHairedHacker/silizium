@@ -14,25 +14,41 @@ class DBManager(object):
 	}
 
 
-	def __init__(self, connectionString):
-		self._connectionString = connectionString
+	def __init__(self, connection_string):
+		self._connection_string = connection_string
+		self._connection_pool = []
 
 
 	def connect(self):
-		self._conn = psycopg2.connect(self._connectionString)
+		conn = psycopg2.connect(self._connection_string)
 
-		cur = self._conn.cursor()
+		cur = conn.cursor()
 
 		for name, query in self.STATEMENTS.items():
 			cur.execute("PREPARE %s AS %s" % (name, query))
 
+		self._connection_pool += [conn]
+
+
+	def _borrow_connection(self):
+		if self._connection_pool == []:
+			self.connect()
+
+		return self._connection_pool.pop()
+
+
+	def _retun_connection(self, conn):
+		self._connection_pool += [conn]
+
 
 	def insert_message(self, time, topic, value):
-		cur = self._conn.cursor()
+		conn = self._borrow_connection()
+		cur = conn.cursor()
 
 		cur.execute("EXECUTE insert_message (%s, %s, %s)",
 					(time, topic, value))
-		self._conn.commit()
+		conn.commit()
+		self._retun_connection(conn)
 
 
 	def _result_to_dict(self, result):
@@ -46,7 +62,8 @@ class DBManager(object):
 
 
 	def get_history(self, topic, seconds_back):
-		cur = self._conn.cursor()
+		conn = self._borrow_connection()
+		cur = conn.cursor()
 
 		start = now() - timedelta(seconds = seconds_back)
 		cur.execute("EXECUTE get_history (%s, %s)",
@@ -54,11 +71,14 @@ class DBManager(object):
 
 		data = cur.fetchall()
 
+		self._retun_connection(conn)
+
 		return map(self._result_to_dict, data)
 
 
 	def get_last_message(self, topic):
-		cur = self._conn.cursor()
+		conn = self._borrow_connection()
+		cur = conn.cursor()
 
 		cur.execute("EXECUTE get_last_message (%s)", (topic,))
 		data = cur.fetchone()
@@ -68,4 +88,5 @@ class DBManager(object):
 		else:
 			data = self._result_to_dict(data)
 
+		self._retun_connection(conn)
 		return data
