@@ -22,6 +22,7 @@ app.config['SECRET_KEY'] = 'omg_so_secret!'
 socketio = SocketIO(app)
 db_manager = DBManager(DB_CONNECTION_STRING)
 
+initialized = False
 
 @app.route('/')
 def index():
@@ -53,17 +54,29 @@ def handle_get_history(json):
 	return WIDGETS
 
 
+def setup_runners():
+	global initialized
+	if not initialized:
+		db_manager.connect()
+
+		socket_runner = MQTTSocketIORunner(socketio)
+		socket_runner.start()
+
+		if app.config['DEBUG']:
+			db_runner = MQTTDatabaseRunner(db_manager)
+			db_runner.start()
+
+	initialized = True
+
 @app.before_first_request
-def setup_socket_runner():
-	db_manager.connect()
+def setup_on_request():
+		setup_runners()
 
-	socket_runner = MQTTSocketIORunner(socketio)
-	socket_runner.start()
 
-	if app.config['DEBUG']:
-		db_runner = MQTTDatabaseRunner(db_manager)
-		db_runner.start()
-
+# If the applications reloads we might get socketio connectons before the first request
+@socketio.on('connect')
+def setup_on_socketio():
+		setup_runners()
 
 if __name__ == '__main__':
 	socketio.run(app, debug=True)
