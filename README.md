@@ -7,6 +7,25 @@ What is this ?
 A MQTT-based monitoring system for the [ChaosInkl](http://chaos-inkl.de) hackerspace.
 
 
+Install
+-------
+```
+apt-get install build-essential postgresql postgresql-server-dev-9.4 python python-dev virtualenv
+```
+
+Create database user and database.
+
+```
+git clone https://github.com/LongHairedHacker/silizium
+cd silizium
+psql silizium < setup.sql 
+virtualenv virtenv
+source virtenv/bin/activate
+pip install -r requirements.txt
+pip install gunicorn
+```
+
+
 
 Licenses
 --------

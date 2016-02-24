@@ -29,11 +29,11 @@ export class Socket {
 	private _messageCallbacks : {[topic : string] : MQTTMessageCallback[]};
 
 
-	constructor(url: string) {
+	constructor() {
 		this._connectionCallbacks = [];
 		this._messageCallbacks = {};
 
-		this._socket = io.connect(url);
+		this._socket = io.connect();
 
 		this._socket.on('connect', () : void => {
 			this._messageCallbacks = {};

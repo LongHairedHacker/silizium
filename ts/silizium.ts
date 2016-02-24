@@ -7,7 +7,7 @@ var widgetInstances : widgets.BaseWidget[] = [];
 
 
 
-var	socket = new siliziumsocket.Socket('http://' + document.domain + ':' + location.port);
+var	socket = new siliziumsocket.Socket();
 socket.onConnection(() => {
 	socket.getWidgets(setupWidgets);
 });

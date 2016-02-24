@@ -48,7 +48,7 @@ var siliziumsocket = require('./siliziumsocket');
 var jsonutils = require('./jsonutils');
 var registry_1 = require('./widgets/registry');
 var widgetInstances = [];
-var socket = new siliziumsocket.Socket('http://' + document.domain + ':' + location.port);
+var socket = new siliziumsocket.Socket();
 socket.onConnection(function () {
     socket.getWidgets(setupWidgets);
 });
@@ -71,11 +71,11 @@ function setupWidgets(widgetConfig) {
 },{"./jsonutils":2,"./siliziumsocket":4,"./widgets/registry":8}],4:[function(require,module,exports){
 "use strict";
 var Socket = (function () {
-    function Socket(url) {
+    function Socket() {
         var _this = this;
         this._connectionCallbacks = [];
         this._messageCallbacks = {};
-        this._socket = io.connect(url);
+        this._socket = io.connect();
         this._socket.on('connect', function () {
             _this._messageCallbacks = {};
             _this._socket.on('mqtt_message', function (msg) { return _this._emitMQTTMessage(msg); });
