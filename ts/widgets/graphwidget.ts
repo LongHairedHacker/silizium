@@ -51,12 +51,18 @@ export default class GraphWidget extends BaseWidget {
 			this._data.push(series);
 
 			_socket.getHistory(topic, _config.secondsBack, (msgs : MQTTMessage[]) => {
+				var index = 0;
+
 				for(var {topic, time, value} of msgs) {
-					var index = this._topics.indexOf(topic);
+					index = this._topics.indexOf(topic);
 					this._data[index].push([time, value]);
 
 					this._updateRange(value);
 				}
+
+				// If the list wasn't empty before we go the history, we need some sorting
+				this._data[index] = this._data[index].sort((a, b) => a[0] - b[0]);
+
 				this._redrawGraph();
 			});
 		}

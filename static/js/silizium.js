@@ -254,12 +254,14 @@ var GraphWidget = (function (_super) {
             var series = [];
             this._data.push(series);
             _socket.getHistory(topic, _config.secondsBack, function (msgs) {
+                var index = 0;
                 for (var _i = 0, msgs_1 = msgs; _i < msgs_1.length; _i++) {
                     var _a = msgs_1[_i], topic = _a.topic, time = _a.time, value = _a.value;
-                    var index = _this._topics.indexOf(topic);
+                    index = _this._topics.indexOf(topic);
                     _this._data[index].push([time, value]);
                     _this._updateRange(value);
                 }
+                _this._data[index] = _this._data[index].sort(function (a, b) { return a[0] - b[0]; });
                 _this._redrawGraph();
             });
         }

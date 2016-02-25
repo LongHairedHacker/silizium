@@ -10,7 +10,7 @@ class DBManager(object):
 	STATEMENTS = {
 		'insert_message' : "INSERT INTO messages (time, topic, value) VALUES ($1,$2,$3)",
 		'get_last_message' : "SELECT time, topic, value FROM messages WHERE topic = $1 ORDER BY time DESC LIMIT 1",
-		'get_history' : "SELECT time, topic, value FROM messages WHERE topic = $1 AND time >= $2 ORDER BY time",
+		'get_history' : "SELECT time, topic, value FROM messages WHERE topic = $1 AND time >= $2 ORDER BY time ASC",
 	}
 
 
