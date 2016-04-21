@@ -1,5 +1,5 @@
 #!/bin/env python2
-import time
+import calendar
 import pytz
 
 from datetime import datetime
@@ -13,5 +13,5 @@ def now():
 def js_timestamp(timestamp):
 	if timestamp.tzinfo == None:
 		raise ValueError("Unaware datetime objects are not supported")
-		
-	return time.mktime(timestamp.timetuple()) * 1000
+
+	return calendar.timegm(timestamp.utctimetuple()) * 1000
