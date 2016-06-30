@@ -87,8 +87,17 @@ class MQTTDatabaseRunner(MQTTRunner):
 
     def _run(self):
         print "[Debug] running database runner"
+
         while not self._thread_stop:
             self._client.loop()
+
+
+    def start(self, threadded = True):
+        for topic in MQTT_TOPICS.keys():
+            self._dbmanager.insert_topic(topic)
+
+        super(MQTTDatabaseRunner, self).start(threadded)
+
 
 
     def __init__(self, dbmanager):

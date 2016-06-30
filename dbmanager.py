@@ -8,9 +8,10 @@ from timeutils import now
 
 class DBManager(object):
 	STATEMENTS = {
-		'insert_message' : "INSERT INTO messages (time, topic, value) VALUES ($1,$2,$3)",
-		'get_last_message' : "SELECT time, topic, value FROM messages WHERE topic = $1 ORDER BY time DESC LIMIT 1",
-		'get_history' : "SELECT time, topic, value FROM messages WHERE topic = $1 AND time >= $2 ORDER BY time ASC",
+		'insert_topic' : "INSERT INTO topics (topic) SELECT CAST($1 AS VARCHAR) WHERE NOT EXISTS (SELECT id FROM topics WHERE topic = $1)",
+		'insert_message' : "INSERT INTO messages (time, topic_id, value) VALUES ($1, (SELECT id FROM topics WHERE topic = $2),$3)",
+		'get_last_message' : "SELECT time, topic, value FROM messages INNER JOIN topics ON messages.topic_id = topics.id WHERE topic = $1 ORDER BY time DESC LIMIT 1",
+		'get_history' : "SELECT time, topic, value FROM messages INNER JOIN topics ON messages.topic_id = topics.id WHERE topic = $1 AND time >= $2 ORDER BY time ASC",
 	}
 
 
@@ -40,6 +41,15 @@ class DBManager(object):
 	def _retun_connection(self, conn):
 		self._connection_pool += [conn]
 
+
+	def insert_topic(self, topic):
+		conn = self._borrow_connection()
+		cur = conn.cursor()
+
+		cur.execute("EXECUTE insert_topic (%s)", (topic,))
+
+		conn.commit()
+		self._retun_connection(conn)
 
 	def insert_message(self, time, topic, value):
 		conn = self._borrow_connection()

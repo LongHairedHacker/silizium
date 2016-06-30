@@ -10,19 +10,43 @@ CREATE DATABASE silizium
        CONNECTION LIMIT = -1;
 
 
--- Table: messages
+-- Table: public.messages
 
--- DROP TABLE messages;
-CREATE TABLE messages
+-- DROP TABLE public.messages;
+
+CREATE TABLE public.messages
 (
-  "time" timestamp with time zone NOT NULL,
-  topic character varying NOT NULL,
-  value double precision,
-  CONSTRAINT primary_key PRIMARY KEY (topic, "time")
+ value double precision NOT NULL,
+ "time" timestamp with time zone NOT NULL,
+ topic_id integer NOT NULL,
+ CONSTRAINT messages_pkey PRIMARY KEY (topic_id, "time"),
+ CONSTRAINT messages_topic_id_fkey FOREIGN KEY (topic_id)
+     REFERENCES public.topics (id) MATCH SIMPLE
+     ON UPDATE CASCADE ON DELETE CASCADE
 )
 WITH (
-  OIDS=FALSE,
-  autovacuum_enabled=true
+ OIDS=FALSE,
+ autovacuum_enabled=true
 );
-ALTER TABLE messages
+
+ALTER TABLE public.messages
   OWNER TO silizium;
+
+
+
+-- Table: public.topics
+
+-- DROP TABLE public.topics;
+
+CREATE TABLE public.topics
+(
+id integer NOT NULL DEFAULT nextval('topics_id_seq'::regclass),
+topic character varying NOT NULL,
+CONSTRAINT topics_pkey PRIMARY KEY (id),
+CONSTRAINT topics_topic_key UNIQUE (topic)
+)
+WITH (
+OIDS=FALSE
+);
+ALTER TABLE public.topics
+OWNER TO silizium;
