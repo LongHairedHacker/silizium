@@ -3,10 +3,10 @@ Flask==1.0
 Flask-SocketIO==2.1
 greenlet==0.4.9
 itsdangerous==0.24
-Jinja2==2.8
+Jinja2==2.10
 MarkupSafe==0.23
 paho-mqtt==1.1
-psycopg2==2.6.1
+psycopg2==2.8.3
 python-engineio==3.8.2.post1
 python-socketio==1.0
 pytz==2015.7
