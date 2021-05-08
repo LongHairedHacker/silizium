@@ -1,4 +1,4 @@
-eventlet==0.18.2
+eventlet==0.31.0
 Flask==1.0
 Flask-SocketIO==2.1
 flup==1.0.2
